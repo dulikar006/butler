@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Form, Depends, HTTPException
+from fastapi import APIRouter, Request, Form, Depends, HTTPException
 from twilio.twiml.messaging_response import MessagingResponse
 
 from helpers.load_response import generate_response
@@ -8,13 +8,17 @@ from helpers.load_response import generate_response
 # import src.auth as auth
 # from src.models import Compute, Compute_all, Mode, Results
 
-router = APIRouter(prefix="/Whatsapp")
+router = APIRouter(prefix="/whatsapp")
 
 
-@router.post("/get_response")  # ,response_class=PlainTextResponse
-async def whatsapp_reply(Body: str = Form(...)):
-    # Get the incoming message (no need to access `request.values` as in Flask)
-    incoming_message = Body.lower()
+@router.post("/get_message")
+async def whatsapp_reply(request: Request):
+    print('whatsapp message hit and started')
+    # Get the incoming message
+    form_data = await request.form()
+    incoming_message = form_data.get('Body', '').lower()
+
+    print(incoming_message)
 
     # Generate a response using the external function
     reply = generate_response(incoming_message)
@@ -23,6 +27,8 @@ async def whatsapp_reply(Body: str = Form(...)):
     # Create a Twilio response object
     resp = MessagingResponse()
     resp.message(reply)
+
+    print(reply)
 
     # Return the TwiML response as a string
     return str(resp)

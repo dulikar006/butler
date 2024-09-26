@@ -5,7 +5,7 @@ from langchain_openai import OpenAIEmbeddings, AzureOpenAIEmbeddings
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from pymongo.operations import SearchIndexModel
 
-
+#https://www.mongodb.com/docs/atlas/atlas-vector-search/ai-integrations/langchain/
 class MongoDBClient:
 
     def __init__(self):
