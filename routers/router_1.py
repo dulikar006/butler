@@ -13,13 +13,12 @@ router = APIRouter(prefix="/whatsapp")
 
 
 @router.post("/get_message")
-async def whatsapp_reply(request: Request):
-    print('whatsapp message hit and started')
-    # Get the incoming message
-    form_data = await request.form()
-    incoming_message = form_data.get('Body', '').lower()
+def whatsapp_reply(Body: str = Form(...)):
+    print('WhatsApp message hit and started')
 
-    print(incoming_message)
+    incoming_message = Body.lower()
+    print(f'Incoming message: {incoming_message}')
+
 
     # Generate a response using the external function
     reply = generate_response(incoming_message)
