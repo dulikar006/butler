@@ -1,4 +1,5 @@
 from typing import List
+from fastapi.responses import Response
 
 from fastapi import APIRouter, Request, Form, Depends, HTTPException
 from twilio.twiml.messaging_response import MessagingResponse
@@ -28,10 +29,8 @@ async def whatsapp_reply(request: Request):
     resp = MessagingResponse()
     resp.message(reply)
 
-    print(reply)
-
     # Return the TwiML response as a string
-    return str(resp)
+    return Response(content=str(resp), media_type="text/xml")
 
 # @router.post("/compute/", response_model=Compute)
 # def compute(

@@ -7,7 +7,7 @@ def load_from_vector(query):
     mc = MongoDBClient()
     mc.connect()
     search_results = mc.search(query)
-    search_results_text = "\n".join([doc.page_content for doc in search_results])
+    search_results_text = "\n".join([doc.get('content') for doc in search_results])
     return search_results_text
 
 def generate_response(query):
