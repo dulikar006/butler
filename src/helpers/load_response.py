@@ -1,24 +1,17 @@
+from clients.mongo_client import MongoDBClient
 from clients.openai_client import llm
-from database.vdb_manager import UploadFilesVDB
 
 
-def load_from_vector(type, query):
-    if type == "SJB":
-        source = 'sjb_blueprint.pdf'
-    elif type == "NPP":
-        source = 'NPP Presidential Election Manifesto - 2024.pdf'
-    else:
-        return
+def load_from_vector(query):
 
-    ufvdb = UploadFilesVDB()
-    ufvdb.connect()
-    search_results = ufvdb.search_chroma(query, source=source)
+    mc = MongoDBClient()
+    mc.connect()
+    search_results = mc.search(query)
     search_results_text = "\n".join([doc.page_content for doc in search_results])
     return search_results_text
 
 def generate_response(query):
-    type = "SJB"
-    data = load_from_vector(type, query)
+    data = load_from_vector(query)
 
     prompt = f"""You are a personal assistant at Avani Hotel dedicated to the customer in Room number 103.
     Your job is to refer the knowledge content and guide your customer as best and humble way possible.
