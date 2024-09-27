@@ -1,3 +1,5 @@
+import os
+
 from twilio.rest import Client
 
 class TwillioClient:
@@ -6,8 +8,8 @@ class TwillioClient:
         self.client = None
 
     def connect(self):
-        account_sid = 'AC7ace3468f7e53936b2c49e16ad354814'
-        auth_token = '9e6e8059b3a62f7b5ad6d18cdacb7094'
+        account_sid = os.environ['twillio_id']
+        auth_token = os.environ['twillio_key']
         self.client = Client(account_sid, auth_token)
 
     def send_message(self, message):

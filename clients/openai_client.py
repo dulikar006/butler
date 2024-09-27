@@ -1,4 +1,5 @@
 import logging
+import os
 
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
@@ -7,12 +8,13 @@ from langchain_openai import AzureChatOpenAI
 logger = logging.getLogger(__name__)
 
 
+
 def call_openai(base_prompt, input):
     try:
 
         llm = AzureChatOpenAI(
-            azure_endpoint="https://butler-openai.openai.azure.com/openai/deployments/butler-gpt-4o/chat/completions?api-version=2023-03-15-preview",
-            api_key='b0a38c56c1c9454ea8c8c0ea1a804060',
+            azure_endpoint=os.environ['openai_endpoint'],
+            api_key=os.environ['openai_key'],
             openai_api_version='2023-03-15-preview',
             model='GPT_4o'
         )
@@ -33,8 +35,8 @@ def call_openai(base_prompt, input):
 
 def get_llm():
     llm = AzureChatOpenAI(
-        azure_endpoint="https://butler-openai.openai.azure.com/openai/deployments/butler-gpt-4o/chat/completions?api-version=2023-03-15-preview",
-        api_key='b0a38c56c1c9454ea8c8c0ea1a804060',
+        azure_endpoint=os.environ['openai_endpoint'],
+        api_key=os.environ['openai_key'],
         openai_api_version='2023-03-15-preview',
         model='GPT_4o'
     )
@@ -43,8 +45,8 @@ def get_llm():
 def llm(input_text):
     # Initialize Azure OpenAI LLM
     llm = AzureChatOpenAI(
-        azure_endpoint="https://butler-openai.openai.azure.com/openai/deployments/butler-gpt-4o/chat/completions?api-version=2023-03-15-preview",
-        api_key='b0a38c56c1c9454ea8c8c0ea1a804060',
+        azure_endpoint=os.environ['openai_endpoint'],
+        api_key=os.environ['openai_key'],
         openai_api_version='2023-03-15-preview',
         model='GPT_4o'
     )

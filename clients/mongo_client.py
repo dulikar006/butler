@@ -1,3 +1,5 @@
+import os
+
 from pymongo import MongoClient
 from langchain_mongodb.vectorstores import MongoDBAtlasVectorSearch
 from pymongo import MongoClient
@@ -8,7 +10,7 @@ from pymongo.operations import SearchIndexModel
 class MongoDBClient:
 
     def __init__(self):
-        self.url = 'mongodb+srv://dulikaranasinghe:UBhygr26Rr1jONQS@butler-db.841st.mongodb.net/?retryWrites=true&w=majority&appName=butler-db'
+        self.url = os.environ['mongo_url']
         self.vector_store = None
         self.atlas_collection = None
         self.db_name = "langchain_db"
@@ -23,8 +25,8 @@ class MongoDBClient:
 
         embeddings = AzureOpenAIEmbeddings(
             # dimensions: Optional[int] = None, # Can specify dimensions with new text-embedding-3 models
-            azure_endpoint="https://butler-openai.openai.azure.com/openai/deployments/text-embedding-ada-002/embeddings?api-version=2023-05-15",
-            api_key='b0a38c56c1c9454ea8c8c0ea1a804060',
+            azure_endpoint=os.environ['embed_endpoint'],
+            api_key=os.environ['embed_key'],
             openai_api_version='2023-05-15',
             azure_deployment='text-embedding-ada-002'
         )
