@@ -1,8 +1,7 @@
 from pymongo import MongoClient
 from langchain_mongodb.vectorstores import MongoDBAtlasVectorSearch
 from pymongo import MongoClient
-from langchain_openai import OpenAIEmbeddings, AzureOpenAIEmbeddings
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_openai import AzureOpenAIEmbeddings
 from pymongo.operations import SearchIndexModel
 
 #https://www.mongodb.com/docs/atlas/atlas-vector-search/ai-integrations/langchain/

@@ -1,9 +1,12 @@
 import json
 
 from clients.openai_client import call_openai
+from clients.twillio_client import TwillioClient
 from database.redis_cache_manager import RedisCacheManager
 from helpers.load_response import generate_response
 from utilities.prompts import action_identification
+
+
 
 
 def extract_whatsapp_data(data: dict):
@@ -35,8 +38,14 @@ def extract_whatsapp_data(data: dict):
 
     if action == 'True':
         response = f'''I apologize, but I’m unable to assist with your request on {criteria} at the moment. However, I’ve informed my manager, and they will be in touch with you shortly. Please feel free to let me know if there’s anything else I can assist you with in the meantime.'''
+        tc = TwillioClient()
+        tc.connect()
+        tc.send_message(f"Hi Mr.Malaka, Our guest at room number 38 is requesting an action on {criteria}. Can you please do the needful. \n - Shalini, Careline Agent.")
+
     else:
         response = generate_response(body, chat_history=chat_history)
+
+    update_history(account_sid, body, response)
 
     response += "\n - Shalini, Careline Agent."
 
@@ -75,6 +84,12 @@ def get_chat_history(user_id):
         return history
     print('error loading cache history')
     return []
+
+def update_history(user_id, question, response):
+    rcm = RedisCacheManager()
+    rcm.connect()
+    rcm.store_conversation(user_id, 'user', question, expire_time=3600)
+    rcm.store_conversation(user_id, 'agent', response, expire_time=3600)
 
 def identify_action(chat_history, question):
     json_string = call_openai(action_identification, {"chat_history": chat_history, "question": question})
