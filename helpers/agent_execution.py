@@ -4,7 +4,6 @@ import requests
 from langgraph.graph import StateGraph, END
 
 from clients.openai_client import call_openai, llm
-from database.vdb_manager import UploadFilesVDB
 
 def run_agents(topic):
 

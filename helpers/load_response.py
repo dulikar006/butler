@@ -10,7 +10,7 @@ def load_from_vector(query):
     search_results_text = "\n".join([doc.get('content') for doc in search_results])
     return search_results_text
 
-def generate_response(query):
+def generate_response(query, chat_history=""):
     data = load_from_vector(query)
 
     prompt = f"""You are a personal assistant at Avani Hotel dedicated to the customer in Room number 103.
@@ -20,6 +20,8 @@ def generate_response(query):
     [content starts here]
     {data}
     [content ends here]
+    
+    chat_history : {chat_history}
     
     Please answer this question only based on the knowledge.
     Question: {query}

@@ -1,4 +1,9 @@
+import json
+
+from clients.openai_client import call_openai
 from database.redis_cache_manager import RedisCacheManager
+from helpers.load_response import generate_response
+from utilities.prompts import action_identification
 
 
 def extract_whatsapp_data(data: dict):
@@ -24,26 +29,37 @@ def extract_whatsapp_data(data: dict):
         media_url = data.get('MediaUrl0')
         attachment_description = process_attachment_message(media_content_type, num_media, media_url, body)
 
-    chat_history = get_chat_history()
+    chat_history = get_chat_history(account_sid)
 
-    return {
-        'sms_message_sid': sms_message_sid,
-        'profile_name': profile_name,
-        'message_type': message_type,
-        'sms_sid': sms_sid,
-        'wa_id': wa_id,
-        'sms_status': sms_status,
-        'body': body,
-        'to': to,
-        'num_segments': num_segments,
-        'referral_num_media': referral_num_media,
-        'message_sid': message_sid,
-        'account_sid': account_sid,
-        'from_whatsapp': from_whatsapp,
-        'api_version': api_version,
-        'attachment_description': attachment_description,
-        'chat_history': chat_history
-    }
+    action, criteria = identify_action(chat_history, body)
+
+    if action == 'True':
+        response = f'''I apologize, but I’m unable to assist with your request on {criteria} at the moment. However, I’ve informed my manager, and they will be in touch with you shortly. Please feel free to let me know if there’s anything else I can assist you with in the meantime.'''
+    else:
+        response = generate_response(body, chat_history=chat_history)
+
+    response += "\n - Shalini, Careline Agent."
+
+    return response
+
+    # return {
+    #     'sms_message_sid': sms_message_sid,
+    #     'profile_name': profile_name,
+    #     'message_type': message_type,
+    #     'sms_sid': sms_sid,
+    #     'wa_id': wa_id,
+    #     'sms_status': sms_status,
+    #     'body': body,
+    #     'to': to,
+    #     'num_segments': num_segments,
+    #     'referral_num_media': referral_num_media,
+    #     'message_sid': message_sid,
+    #     'account_sid': account_sid,
+    #     'from_whatsapp': from_whatsapp,
+    #     'api_version': api_version,
+    #     'attachment_description': attachment_description,
+    #     'chat_history': chat_history
+    # }
 
 
 # TO-DO
@@ -53,9 +69,20 @@ def process_attachment_message(media_content_type, num_media, media_url, body):
 
 def get_chat_history(user_id):
     rcm = RedisCacheManager()
+    rcm.connect()
     history = rcm.get_conversation_history(user_id)
     if isinstance(history, list) and len(history)>0:
         return history
     print('error loading cache history')
     return []
 
+def identify_action(chat_history, question):
+    json_string = call_openai(action_identification, {"chat_history": chat_history, "question": question})
+    first_brace_index = json_string.find('{')
+    last_brace_index = json_string.rfind('}')
+    extracted_json = json_string[first_brace_index:last_brace_index + 1]
+    extracted_json = extracted_json.replace("'", '"')
+    result_dict = json.loads(extracted_json)
+    action = result_dict.get('result').get('action')
+    criteria = result_dict.get('result').get('criteria')
+    return action, criteria

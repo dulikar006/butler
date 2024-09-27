@@ -51,7 +51,7 @@ app.include_router(router_1.router)
 #     """
 #     import uvicorn
 #
-#     from src.utils import find_free_port
+#     from src.utilities import find_free_port
 #
 #     port = find_free_port()
 #     logger.info(f"Running API on port: {port}")
