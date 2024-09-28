@@ -1,0 +1,80 @@
+/* General body styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+/* Form styling */
+form {
+    margin-top: 20px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+form input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+form input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+form input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Heading styling */
+h1 {
+    color: #333;
+}
+
+h2 {
+    color: #555;
+}

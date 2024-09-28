@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI Table</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <h1>Dynamic Table with FastAPI</h1>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        {% for row in table_data %}
+        <tr>
+            <td>{{ row.id }}</td>
+            <td>{{ row.name }}</td>
+            <td>{{ row.description }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Add a New Row</h2>
+    <form action="/add" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" required>
+
+        <input type="submit" value="Add Row">
+    </form>
+
+     <h2>Reset Table</h2>
+    <form action="/delete-all" method="post">
+        <p>Are you sure you want to delete all rows?</p>
+        <input type="submit" value="Reset Table">
+    </form>
+
+</body>
+</html>

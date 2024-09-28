@@ -1,31 +1,48 @@
-"""
-app.py
-------
-
-This file defines the entrypoint for the API. Creates the FastAPI
-object and import all the endpoints defined in the diferents routers.
-"""
-
 from logging import getLogger
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Form
+from fastapi.staticfiles import StaticFiles
+from starlette.templating import Jinja2Templates
 
 import auth as auth
+from database.redis_cache_manager import RedisCacheManager
 from routers import router_1
+
+from fastapi.responses import HTMLResponse, RedirectResponse
+from starlette.requests import Request
 
 logger = getLogger(__name__)
 
 
 app = FastAPI()
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.get("/")
-async def root():
-    """
-    Root url of the API
-    """
-    return {"message": "Hello World"}
+templates = Jinja2Templates(directory="templates")
 
+# Route to display the table
+@app.get("/", response_class=HTMLResponse)
+async def get_table(request: Request):
+    redis_manager = RedisCacheManager()
+    redis_manager.connect()
+    table_data = redis_manager.get_table_data()
+    return templates.TemplateResponse("index.html", {"request": request, "table_data": table_data})
+
+# Route to add a new row
+@app.post("/add", response_class=HTMLResponse)
+async def add_row(name: str = Form(...), description: str = Form(...)):
+    redis_manager = RedisCacheManager()
+    redis_manager.connect()
+    redis_manager.store_table_row(name, description)
+    table_data = redis_manager.get_table_data()
+    return RedirectResponse(url="/", status_code=303)
+
+@app.post("/delete-all", response_class=HTMLResponse)
+async def delete_all_rows():
+    redis_manager = RedisCacheManager()
+    redis_manager.connect()
+    redis_manager.delete_all_rows()
+    return RedirectResponse(url="/", status_code=303)
 
 @app.get("/test-auth/")
 async def test(authorized: bool = Depends(auth.validate)):
