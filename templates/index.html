@@ -3,44 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FastAPI Table</title>
+    <title>Demo Customer Order Table</title>
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* General body styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* Container for better alignment */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Heading styling */
+        h1 {
+            color: #2C3E50;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #34495E;
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        table, th, td {
+            border: none;
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3498DB;
+            color: white;
+            font-weight: 600;
+        }
+
+        td {
+            background-color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #f1f2f6;
+            cursor: pointer;
+        }
+
+        /* Form styling */
+        form {
+            margin-top: 20px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #34495E;
+        }
+
+        form input[type="text"], form input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        form input[type="submit"] {
+            background-color: #3498DB;
+            color: white;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form input[type="submit"]:hover {
+            background-color: #2980B9;
+        }
+
+        /* Confirmation form for reset */
+        form .warning {
+            color: #E74C3C;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* Footer styling */
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7F8C8D;
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Dynamic Table with FastAPI</h1>
+    <div class="container">
+        <h1>Demo Customer Order Table</h1>
 
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-        </tr>
-        {% for row in table_data %}
-        <tr>
-            <td>{{ row.id }}</td>
-            <td>{{ row.name }}</td>
-            <td>{{ row.description }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Criteria</th>
+            </tr>
+            {% for row in table_data %}
+            <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.name }}</td>
+                <td>{{ row.description }}</td>
+                <td>{{ row.criteria }}</td>
+            </tr>
+            {% endfor %}
+        </table>
 
-    <h2>Add a New Row</h2>
-    <form action="/add" method="post">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
+       <h2>Add a New Order</h2>
+        <form action="/add" method="post">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
 
-        <label for="description">Description:</label>
-        <input type="text" id="description" name="description" required>
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" required>
 
-        <input type="submit" value="Add Row">
-    </form>
+            <label for="criteria">Criteria:</label>
+            <input type="text" id="criteria" name="criteria" required>
 
-     <h2>Reset Table</h2>
-    <form action="/delete-all" method="post">
-        <p>Are you sure you want to delete all rows?</p>
-        <input type="submit" value="Reset Table">
-    </form>
+            <input type="submit" value="Add Row">
+        </form>
+
+
+        <h2>Reset All Orders</h2>
+        <form action="/delete-all" method="post">
+            <p class="warning">Are you sure you want to delete all orders?</p>
+            <input type="submit" value="Reset Table">
+        </form>
+    </div>
+
+    <footer>
+        © 2024 FastAPI Table | All rights reserved
+    </footer>
 
 </body>
 </html>

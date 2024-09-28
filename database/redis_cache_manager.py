@@ -31,12 +31,32 @@ class RedisCacheManager(RedisClient):
             else:
                 print(f"Agent: {message['body']}")
 
-    def store_table_row(self, name, description):
+    '''to keep on track if normal conversation or order creation'''
+    def add_is_order_creation(self, user_id, order_Type, expire_time=3600):
+        key = f"order_:{user_id}"
+        self.connection.rpush(key, json.dumps(order_Type))
+        self.connection.expire(key, expire_time)  # Expiration time in seconds
+        self.connection.close()
+    def is_order_creation(self, user_id, limit=50):
+        key = f"order_:{user_id}"
+        messages = self.connection.lrange(key, -limit, -1)
+        self.connection.close()
+        return [json.loads(message) for message in messages]
+
+    def delete_order_creation(self, user_id):
+        key = f"order_:{user_id}"
+        self.connection.delete(key)
+        self.connection.close()
+
+    '''order_creation_helper_ends_here'''
+
+    def store_table_row(self, name, description, criteria):
         row_id = self.get_next_id()
         row_data = {
             "id": row_id,
             "name": name,
-            "description": description
+            "description": description,
+            "criteria": criteria
         }
         self.connection.rpush("table_data", json.dumps(row_data))
         self.connection.close()
@@ -53,3 +73,9 @@ class RedisCacheManager(RedisClient):
     def delete_all_rows(self):
         self.connection.delete("table_data")
         self.connection.close()
+
+    def delete_all(self):
+        self.connection.flushdb()  # Deletes all keys from the current database
+        self.connection.close()
+
+

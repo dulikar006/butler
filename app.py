@@ -30,11 +30,10 @@ async def get_table(request: Request):
 
 # Route to add a new row
 @app.post("/add", response_class=HTMLResponse)
-async def add_row(name: str = Form(...), description: str = Form(...)):
+async def add_row(name: str = Form(...), description: str = Form(...), criteria: str = Form(...)):
     redis_manager = RedisCacheManager()
     redis_manager.connect()
-    redis_manager.store_table_row(name, description)
-    table_data = redis_manager.get_table_data()
+    redis_manager.store_table_row(name, description, criteria)
     return RedirectResponse(url="/", status_code=303)
 
 @app.post("/delete-all", response_class=HTMLResponse)

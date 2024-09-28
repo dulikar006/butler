@@ -3,10 +3,10 @@ import json
 from clients.openai_client import call_openai
 from clients.twillio_client import TwillioClient
 from database.redis_cache_manager import RedisCacheManager
+from helpers.json_helper import convert_to_json
 from helpers.load_response import generate_response
-from utilities.prompts import action_identification
-
-
+from transformers.order_creation_transformer import extract_whatsapp_data_for_order_creation
+from utilities.prompts import action_identification, action_fields, action_route_consolidated
 
 
 def extract_whatsapp_data(data: dict):
@@ -32,11 +32,30 @@ def extract_whatsapp_data(data: dict):
         media_url = data.get('MediaUrl0')
         attachment_description = process_attachment_message(media_content_type, num_media, media_url, body)
 
+    '''check if the message is part of order creation process'''
+    redis_manager = RedisCacheManager()
+    redis_manager.connect()
+    category = redis_manager.is_order_creation(account_sid)
+    if isinstance(category, list) and len(category)>0:
+        category = category[0]
+        if category != 0 or "0" not in category:
+            response = extract_whatsapp_data_for_order_creation(profile_name, account_sid, category, body)
+            response += "\n - Shalini, Careline Agent."
+            return response
+
     chat_history = get_chat_history(account_sid)
 
     action, criteria = identify_action(chat_history, body)
 
     if action == 'True':
+
+        is_category, response = route_action(account_sid, chat_history, body, criteria)
+
+        if is_category: #if identified action, respond to prompt required information
+            update_history(account_sid, body, response)
+            response += "\n - Shalini, Careline Agent."
+            return response
+
         response = f'''I apologize, but I’m unable to assist with your request on {criteria} at the moment. However, I’ve informed my manager, and they will be in touch with you shortly. Please feel free to let me know if there’s anything else I can assist you with in the meantime.'''
         tc = TwillioClient()
         tc.connect()
@@ -93,11 +112,20 @@ def update_history(user_id, question, response):
 
 def identify_action(chat_history, question):
     json_string = call_openai(action_identification, {"chat_history": chat_history, "question": question})
-    first_brace_index = json_string.find('{')
-    last_brace_index = json_string.rfind('}')
-    extracted_json = json_string[first_brace_index:last_brace_index + 1]
-    extracted_json = extracted_json.replace("'", '"')
-    result_dict = json.loads(extracted_json)
+    result_dict = convert_to_json(json_string)
     action = result_dict.get('result').get('action')
     criteria = result_dict.get('result').get('criteria')
     return action, criteria
+
+def route_action(user_id, chat_history, question, criteria):
+    json_string = call_openai(action_route_consolidated, {"chat_history": chat_history, "question": question,
+                                                      "criteria": criteria, "action_fields": action_fields})
+    result_dict = convert_to_json(json_string)
+    category = int(result_dict.get('result').get('category'))
+    response = result_dict.get('result').get('response')
+    if category == 0:
+        return False, response
+    rcm = RedisCacheManager()
+    rcm.connect()
+    rcm.add_is_order_creation(user_id, category)
+    return True, response
