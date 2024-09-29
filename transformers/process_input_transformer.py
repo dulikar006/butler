@@ -32,6 +32,8 @@ def extract_whatsapp_data(data: dict):
         media_url = data.get('MediaUrl0')
         attachment_description = process_attachment_message(media_content_type, num_media, media_url, body)
 
+    chat_history = get_chat_history(account_sid)
+
     '''check if the message is part of order creation process'''
     redis_manager = RedisCacheManager()
     redis_manager.connect()
@@ -39,11 +41,10 @@ def extract_whatsapp_data(data: dict):
     if isinstance(category, list) and len(category)>0:
         category = category[0]
         if category != 0 or "0" not in category:
-            response = extract_whatsapp_data_for_order_creation(profile_name, account_sid, category, body)
+            '''check if current question is about the booking or completely different, if different, ask still want to continue with the order'''
+            response = extract_whatsapp_data_for_order_creation(profile_name, account_sid, category, body, chat_history)
             response += "\n - Shalini, Careline Agent."
             return response
-
-    chat_history = get_chat_history(account_sid)
 
     action, criteria = identify_action(chat_history, body)
 

@@ -159,6 +159,7 @@ order_details_validation = '''
 You are an expert in customer service and front desk handling in Hotel industry.
 Your job is to follow below guidelines and identify if this user response have all the required details for order creation on given order category.
 
+chat_history: {chat_history}
 
 user_response: {user_response}
 
@@ -180,6 +181,7 @@ required fields to fullfill the order: {action_fields}
 - do not invent new values or hallucinate.
 - Do not return code.
 - Do not return descriptions.
+- Validate the response dictionary and fix if any errors.
 
 return output in below JSON format:
 result:["order_details": "", order_creation_details: "", response: ""]
@@ -189,6 +191,8 @@ result:["order_details": "", order_creation_details: "", response: ""]
 json_validation_prompt = '''You are an agent working on json validation.
 input_data:
 {json_data}
+
+error message while trying to convert to dictionary: {error_message}
 
 fix and update any errors in given dictionary value.
 

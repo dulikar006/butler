@@ -4,7 +4,7 @@ from helpers.json_helper import convert_to_json
 from utilities.prompts import order_details_validation, action_fields
 
 
-def extract_whatsapp_data_for_order_creation(customer_name, sms_sid, category, user_response):
+def extract_whatsapp_data_for_order_creation(customer_name, sms_sid, category, user_response, chat_history):
     orders = {
     1: "Restaurant/Food Orders",
     2: "Shuttle/Transport Orders",
@@ -18,7 +18,7 @@ def extract_whatsapp_data_for_order_creation(customer_name, sms_sid, category, u
     order_category = orders.get(int(category))
 
     json_string = call_openai(order_details_validation, {"user_response": user_response, "order_category": order_category,
-                                                          "action_fields": action_fields})
+                                                          "action_fields": action_fields, 'chat_history': chat_history})
     result_dict = convert_to_json(json_string)
     result = result_dict.get('result')
     if isinstance(result, list):
