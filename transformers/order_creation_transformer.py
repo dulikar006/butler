@@ -19,8 +19,7 @@ def extract_whatsapp_data_for_order_creation(customer_name, sms_sid, category, u
 
     json_string = call_openai(order_details_validation, {"user_response": user_response, "order_category": order_category,
                                                           "action_fields": action_fields, 'chat_history': chat_history})
-    result_dict = convert_to_json(json_string)
-    result = result_dict.get('result')
+    result = convert_to_json(json_string)
     if isinstance(result, list):
         result = result[0]
     order_details = result.get('order_details')

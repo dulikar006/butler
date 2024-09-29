@@ -114,16 +114,16 @@ def update_history(user_id, question, response):
 def identify_action(chat_history, question):
     json_string = call_openai(action_identification, {"chat_history": chat_history, "question": question})
     result_dict = convert_to_json(json_string)
-    action = result_dict.get('result').get('action')
-    criteria = result_dict.get('result').get('criteria')
+    action = result_dict.get('action')
+    criteria = result_dict.get('criteria')
     return action, criteria
 
 def route_action(user_id, chat_history, question, criteria):
     json_string = call_openai(action_route_consolidated, {"chat_history": chat_history, "question": question,
                                                       "criteria": criteria, "action_fields": action_fields})
     result_dict = convert_to_json(json_string)
-    category = int(result_dict.get('result').get('category'))
-    response = result_dict.get('result').get('response')
+    category = int(result_dict.get('category'))
+    response = result_dict.get('response')
     if category == 0:
         return False, response
     rcm = RedisCacheManager()

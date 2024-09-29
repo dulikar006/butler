@@ -33,8 +33,9 @@ class RedisClient:
         self.connection.delete(key)
         self.connection.close()
 
-# sms_sid = 'AC7ace3468f7e53936b2c49e16ad354814'
-# redis_manager = RedisClient()
-# redis_manager.connect()
-# print(redis_manager.is_order_creation(sms_sid))
-# redis_manager.delete_order_creation(sms_sid)
+
+account_sid = 'AC7ace3468f7e53936b2c49e16ad354814'
+redis_manager = RedisClient()
+redis_manager.connect()
+print(redis_manager.is_order_creation(account_sid))
+redis_manager.delete_order_creation(account_sid)

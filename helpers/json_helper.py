@@ -26,6 +26,8 @@ def convert_to_json(json_string: str) -> dict:
 
             # Attempt to parse the cleaned JSON string
             result_dict = json.loads(cleaned_json_string)
+            if result_dict.get('result'):
+                result_dict = result_dict.get('result')
 
             i = 5
         except Exception as err:

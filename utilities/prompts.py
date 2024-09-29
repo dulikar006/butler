@@ -24,54 +24,50 @@ return output in below JSON format:
 result:["criteria": "", "action": "True or False"]
 '''
 
-action_fields = '''
-Restaurant/Food Orders:
-Meal type: Room Food Delivery
-Menu selection: Required Menu Item Name 
-Special dietary preferences: Vegan, Vegetarian, Gluten-free, etc.
-Delivery time: Immediate or scheduled for later
-Room number: To ensure the order is delivered to the correct room
-Payment method: Room charge or pay via card/cash on delivery
+action_fields = {
+    "Restaurant/Food Orders": {
+        "Meal type": "Room Food Delivery",
+        "Menu selection": "Required Menu Item Name",
+        "Special dietary preferences": ["Vegan", "Vegetarian", "Gluten-free", "etc."],
+        "Delivery time": ["Immediate", "Scheduled for later"],
+        "Room number": "To ensure the order is delivered to the correct room",
+        "Payment method": ["Room charge", "Pay via card/cash on delivery"]
+    },
+    "Shuttle/Transport Orders": {
+        "Pickup time": "When the shuttle should arrive",
+        "Pickup location": ["Hotel", "Nearby attraction"],
+        "Drop-off location": "Where the guest needs to go",
+        "Number of passengers": "To ensure enough seats are available",
+        "Special requests": ["Baby seats", "Luggage assistance", "etc."]
+    },
+    "Housekeeping Orders": {
+        "Service type": ["Full room cleaning", "Towel replacement", "Washroom cleaning", "Bed linen change"],
+        "Preferred time": ["Immediate", "Scheduled time"],
+        "Additional requests": ["Extra toiletries", "Water bottles", "etc."],
+        "Urgency level": ["Immediate", "Routine"]
+    },
+    "Laundry Service": {
+        "Type of items": ["Clothes", "Bed linen", "Towels", "etc."],
+        "Service required": ["Washing", "Ironing", "Dry cleaning"],
+        "Pickup and delivery times": "Schedule for collection and return",
+        "Special instructions": ["Delicate fabrics", "etc."]
+    },
+    "Spa/Gym Booking": {
+        "Service type": ["Massage", "Facial", "Personal training session"],
+        "Preferred time and date": "Appointment scheduling",
+        "Special preferences": ["Gender preference for therapist", "etc."]
+    },
+    "Wake-Up Calls": {
+        "Wake-up time": ["Exact time", "Time range"],
+        "Additional requests": ["Coffee delivery", "Breakfast setup"]
+    },
+    "Event/Activity Bookings": {
+        "Event type": ["Yoga session", "Local tours", "In-house events"],
+        "Time and date": "Schedule for participation",
+        "Special requests": ["Group bookings", "Special assistance", "etc."]
+    }
+}
 
-
-Shuttle/Transport Orders:
-Pickup time: When the shuttle should arrive
-Pickup location: Whether it's the hotel or a nearby attraction
-Drop-off location: Where the guest needs to go
-Number of passengers: To ensure enough seats are available
-Special requests: Baby seats, luggage assistance, etc.
-
-
-Housekeeping Orders:
-Service type: Full room cleaning, Towel replacement, Washroom cleaning, Bed linen change
-Preferred time: Immediate or at a scheduled time
-Additional requests: Extra toiletries, water bottles, etc.
-Urgency level: Immediate or routine
-
-
-Laundry Service:
-Type of items: Clothes, bed linen, towels, etc.
-Service required: Washing, ironing, dry cleaning
-Pickup and delivery times: Schedule for collection and return
-Special instructions: Delicate fabrics, etc.
-
-
-Spa/Gym Booking:
-Service type: Massage, facial, personal training session
-Preferred time and date: Appointment scheduling
-Special preferences: Gender preference for therapist, etc.
-
-
-Wake-Up Calls:
-Wake-up time: Exact time or range
-Additional requests: Coffee delivery, breakfast setup
-
-
-Event/Activity Bookings:
-Event type: Yoga session, local tours, in-house events
-Time and date: Schedule for participation
-Special requests: Group bookings, special assistance
-'''
 
 action_route = '''
 You are an expert in customer service and front desk handling in Hotel industry.
@@ -166,7 +162,7 @@ user_response: {user_response}
 
 order_category: {order_category}
 
-required fields to fullfill the order: {action_fields}
+required fields to fulfill the order: {action_fields}
 
 
 [GUIDELINES]
