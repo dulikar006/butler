@@ -1,4 +1,5 @@
 from clients.openai_client import call_openai
+from database.order_manager import OrderManager
 from database.redis_cache_manager import RedisCacheManager
 from helpers.json_helper import convert_to_json
 from utilities.prompts import order_details_validation, action_fields
@@ -32,7 +33,8 @@ def extract_whatsapp_data_for_order_creation(customer_name, sms_sid, category, u
         redis_manager.connect()
         redis_manager.delete_order_creation(sms_sid)
 
-        redis_manager.store_table_row(customer_name, str(order_creation_details), order_category)
+        om = OrderManager()
+        om.store_table_row(customer_name, str(order_creation_details), order_category)
 
         response = f'''Your order for {order_category} been created under below details sir. Enjoy your stay.
         {order_creation_details}'''

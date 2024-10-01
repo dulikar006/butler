@@ -9,13 +9,17 @@ from pymongo.operations import SearchIndexModel
 #https://www.mongodb.com/docs/atlas/atlas-vector-search/ai-integrations/langchain/
 class MongoDBClient:
 
-    def __init__(self):
+    def __init__(self, db_name="langchain_db", collection_name="test"):
         self.url = os.environ['mongo_url']
         self.vector_store = None
         self.atlas_collection = None
-        self.db_name = "langchain_db"
-        self.collection_name = "test"
+        self.db_name = db_name
+        self.collection_name = collection_name
         self.vector_search_index = "vector_index"
+
+    def client_connection(self):
+        client = MongoClient(self.url)
+        return client[self.db_name][self.collection_name]
 
     def connect(self):
         client = MongoClient(self.url)
