@@ -1,3 +1,5 @@
+import atexit
+
 from fastapi import APIRouter, Depends, Form, File, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import HTMLResponse, RedirectResponse
@@ -20,9 +22,10 @@ order_manager = OrderManager()
 
 # Route to display the table
 @router.get("/", response_class=HTMLResponse)
-async def get_table(request: Request):
-    table_data = await order_manager.get_table_data()
+def get_table(request: Request):
+    table_data = order_manager.get_table_data()  # Call the method synchronously
     return templates.TemplateResponse("index.html", {"request": request, "table_data": table_data})
+
 
 # Use dependency injection for the database session
 @router.get("/customers")
@@ -83,3 +86,6 @@ async def add_action(
     )
     return RedirectResponse(url="/admin", status_code=303)
 
+@atexit.register
+def cleanup():
+    order_manager.close()

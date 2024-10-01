@@ -33,3 +33,4 @@ redis
 sqlalchemy
 asyncpg
 databases
+psycopg2

@@ -44,6 +44,7 @@ def extract_whatsapp_data(data: dict):
             '''check if current question is about the booking or completely different, if different, ask still want to continue with the order'''
             response = extract_whatsapp_data_for_order_creation(profile_name, account_sid, category, body, chat_history)
             response += "\n - Shalini, Careline Agent."
+            update_history(account_sid, body, response)
             return response
 
     action, criteria = identify_action(chat_history, body)
@@ -54,6 +55,8 @@ def extract_whatsapp_data(data: dict):
 
         if is_category: #if identified action, respond to prompt required information
             update_history(account_sid, body, response)
+            if isinstance(response, dict):
+                response = f"Please provide these details to proceed with the order - {str(response)}"
             response += "\n - Shalini, Careline Agent."
             return response
 

@@ -1,52 +1,60 @@
 import os
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import text  # Import the text function
-from models.order_model import Order
+from clients.postgres_client import PostgresClient  # Assuming you saved the previous client code as postgres_py
+from models.order_model import Order  # Adjust the import according to your project structure
 
-
-class OrderManager:
+class OrderManager(PostgresClient):
 
     def __init__(self):
-        self.DATABASE_URL = os.environ['postgres_url']
-        # Use async engine
-        self.engine = create_async_engine(self.DATABASE_URL, echo=True)
-        # Use AsyncSession instead of regular sessionmaker
-        self.SessionLocal = sessionmaker(
-            bind=self.engine,
-            expire_on_commit=False,
-            class_=AsyncSession
-        )
+        super().__init__()
+        self.connect()
 
-    async def get_session(self):
-        """Create a new session asynchronously."""
-        async with self.SessionLocal() as session:
-            yield session
 
-    async def store_table_row(self, name: str, description: str, criteria: str):
-        """Store a new row in the PostgreSQL table asynchronously."""
-        async with self.SessionLocal() as session:
-            new_row = Order(name=name, description=description, criteria=criteria)
-            session.add(new_row)
-            await session.commit()
+    def close(self):
+        self.close()
 
-    async def get_table_data(self):
-        """Retrieve all rows from the PostgreSQL table asynchronously."""
-        async with self.SessionLocal() as session:
-            result = await session.execute(text("SELECT * FROM orders"))  # Use text() for the query
-            rows = result.scalars().all()
-            return rows
+    def store_table_row(self, name: str, description: str, criteria: str):
+        """Store a new row in the PostgreSQL table."""
+        try:
+            insert_query = """
+            INSERT INTO orders (name, description, criteria) VALUES (%s, %s, %s);
+            """
+            self.execute_query(insert_query, (name, description, criteria))
+        except Exception as e:
+            print(f"Error while storing table row: {e}")
 
-    async def delete_all_rows(self):
-        """Delete all rows from the PostgreSQL table asynchronously."""
-        async with self.SessionLocal() as session:
-            await session.execute(text("DELETE FROM orders"))  # Use text() for the query
-            await session.commit()
+    def get_table_data(self):
+        """Retrieve all rows from the PostgreSQL table."""
+        try:
+            select_query = "SELECT * FROM orders;"
+            data = self.fetch_all(select_query)
+            dict_list = [
+                {
+                    "id": item[0],
+                    "name": item[1],
+                    "details": eval(item[2]),  # Convert the string representation of a dict to an actual dict
+                    "category": item[3]
+                }
+                for item in data
+            ]
+            return dict_list
+        except Exception as e:
+            print(f"Error while fetching table data: {e}")
+            return None
 
-    async def get_next_id(self):
-        """Get the next available ID (auto-incremented in PostgreSQL) asynchronously."""
-        async with self.SessionLocal() as session:
-            # Fetch the count using a text query
-            result = await session.execute(text("SELECT COUNT(*) FROM orders"))
-            count = result.scalar()  # Get the scalar result
-            return count + 1
+    def delete_all_rows(self):
+        """Delete all rows from the PostgreSQL table."""
+        try:
+            delete_query = "DELETE FROM orders;"
+            self.execute_query(delete_query)
+        except Exception as e:
+            print(f"Error while deleting rows: {e}")
+
+    def get_next_id(self):
+        """Get the next available ID (auto-incremented in PostgreSQL)."""
+        try:
+            count_query = "SELECT COUNT(*) FROM orders;"
+            result = self.fetch_one(count_query)
+            return result[0] + 1 if result else 1
+        except Exception as e:
+            print(f"Error while getting the next ID: {e}")
+            return None

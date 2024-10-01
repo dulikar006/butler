@@ -28,13 +28,13 @@ def extract_whatsapp_data_for_order_creation(customer_name, sms_sid, category, u
     response = result.get('response')
 
     if (isinstance(order_details, bool) and order_details is True) or (isinstance(order_details, str) and order_details == 'True'):
+        om = OrderManager()
+        om.store_table_row(customer_name, str(order_creation_details), order_category)
 
         redis_manager = RedisCacheManager()
         redis_manager.connect()
         redis_manager.delete_order_creation(sms_sid)
 
-        om = OrderManager()
-        om.store_table_row(customer_name, str(order_creation_details), order_category)
 
         response = f'''Your order for {order_category} been created under below details sir. Enjoy your stay.
         {order_creation_details}'''
