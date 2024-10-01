@@ -4,6 +4,7 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.requests import Request
 from fastapi.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
+from typing import List
 
 from database.admin_manager import AdminManager
 from database.order_manager import OrderManager
@@ -60,12 +61,25 @@ async def handle_upload_brochures(
     brochure_data = await admin_manager.upload_brochures(session=db, criteria=criteria, description=description, filename=file.filename)
     return RedirectResponse(url="/admin", status_code=303)
 
+
 @router.post("/add-action")
 async def add_action(
-    name: str = Form(...),
-    description: str = Form(...),
-    fields: list[str] = Form(...),
+    a_name: str = Form(...),
+    a_description: str = Form(...),
+    required_details: List[str] = Form(...),
+    example_values: List[str] = Form(...),
+    mandatory_optional: List[str] = Form(...),
     db: AsyncSession = Depends(admin_manager.get_db_session)
 ):
-    action_data = await admin_manager.add_action(session=db, name=name, description=description, fields=fields)
+    action_data = await admin_manager.add_action(
+        session=db,
+        name=a_name,
+        description=a_description,
+        fields={
+            "details": required_details,
+            "examples": example_values,
+            "mandatory_optional": mandatory_optional
+        }
+    )
     return RedirectResponse(url="/admin", status_code=303)
+

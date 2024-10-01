@@ -175,28 +175,30 @@ input[type="submit"]:hover {
             });
         }
 
-          function addRow() {
-        // Create a new row
-        const formRows = document.getElementById('formRows');
-        const newRow = document.createElement('div');
-        newRow.classList.add('form-row');
+         function addRow() {
+            // Create a new row
+            const formRows = document.getElementById('formRows');
+            const newRow = document.createElement('div');
+            newRow.classList.add('form-row');
 
-        newRow.innerHTML = `
-            <input type="text" name="textbox[]" placeholder="Enter text">
-            <select name="dropdown[]">
-               <option value="mandatory">mandatory</option>
-               <option value="optional">optional</option>
-            </select>
-            <button type="button" onclick="removeRow(this)">Remove</button>
-        `;
+            newRow.innerHTML = `
+                <input type="text" name="required_details" placeholder="Enter Required Detail Field" required>
+                <input type="text" name="example_values" placeholder="Example Value" required>
+                <select name="mandatory_optional" required>
+                    <option value="mandatory">mandatory</option>
+                    <option value="optional">optional</option>
+                </select>
+                <button type="button" onclick="removeRow(this)">Remove</button>
+            `;
 
-        formRows.appendChild(newRow);
-    }
+            formRows.appendChild(newRow);
+        }
 
-    function removeRow(button) {
-        // Remove the row
-        button.parentElement.remove();
-    }
+        function removeRow(button) {
+            // Remove the row
+            button.parentElement.remove();
+        }
+
     </script>
 </head>
 <body>
@@ -249,12 +251,12 @@ input[type="submit"]:hover {
 
                 <div class="form-group">
                     <label for="information">Information:</label>
-                    <textarea id="information" name="information" rows="20" required style="width: 906px; height: 165px;"></textarea>
+                    <textarea id="information" name="information" rows="20" style="width: 906px; height: 165px;"></textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="file">Upload Information File:</label>
-                    <input type="file" id="file" name="file" required>
+                    <input type="file" id="file" name="file">
                 </div>
 
                 <input type="submit" value="Upload File">
@@ -290,33 +292,35 @@ input[type="submit"]:hover {
             <form action="add-action" method="post">
                 <label for="name">Action Name:</label>
                 <input type="text" id="a_name" name="a_name" required>
-                <label for="room_number">Action Description:</label>
-                <input type="number" id="action_description" name="action_description" required>
 
-            <br><br>
-                                <label for="room_number">Required Fields For Action:</label>
+                <label for="a_description">Action Description:</label>
+                <input type="text" id="a_description" name="a_description" required>
 
+                <br><br>
+                <label for="name">Required Fields For Action:</label>
                 <br>
 
                 <button type="button" onclick="addRow()">Add Row</button>
-                            <div id="formRows">
-                <!-- Initial Row -->
-                <div class="form-row">
-                    <input type="text" name="textbox[]" placeholder="Enter text">
-                    <select name="dropdown[]">
-                        <option value="mandatory">mandatory</option>
-                        <option value="optional">optional</option>
-                    </select>
-                    <button type="button" onclick="removeRow(this)">Remove</button>
+                <div id="formRows">
+                    <!-- Initial Row -->
+                    <div class="form-row">
+                        <input type="text" name="required_details" placeholder="Enter Required Detail Field" required>
+                        <input type="text" name="example_values" placeholder="Example Value" required>
+                        <select name="mandatory_optional" required>
+                            <option value="mandatory">mandatory</option>
+                            <option value="optional">optional</option>
+                        </select>
+                        <button type="button" onclick="removeRow(this)">Remove</button>
+                    </div>
+                    <br><br>
                 </div>
 
-
-            <br><br>
-                            </div>
-
-                <input type="submit" value="Add Customer">
+                <input type="submit" value="Add Action">
             </form>
         </div>
+
+
+
 
         <!-- Tab 5: Existing Orders -->
         <div class="tab-content">
