@@ -33,35 +33,12 @@ async def whatsapp_reply(request: Request):
 def whatsapp_reply(Body: str = Form(...)):
     print('WhatsApp message hit and started')
     incoming_message = Body.lower()
-    print(f'Incoming message: {incoming_message}')
-    reply = generate_response(incoming_message)
-    resp = MessagingResponse()
-    resp.message(reply)
-    return Response(content=str(resp), media_type="text/xml")
+    response = extract_whatsapp_data({'ProfileName': 'test_name', 'Body': incoming_message, 'AccountSid': 'test2309239802091238', })
+    # response = execute_agent(data)
+    if response:
+        # Create a Twilio response object
+        resp = MessagingResponse()
+        resp.message(response)
+        # Return the TwiML response as a string
+        return Response(content=str(resp), media_type="text/xml")
 
-# @router.post("/compute/", response_model=Compute)
-# def compute(
-#     number: int,
-#     mode: Mode = "SUM",
-#     db: DB = Depends(get_db),
-#     authorized: bool = Depends(auth.validate),
-# ) -> Compute:
-#     db_num = db.get_number()
-#
-#     if mode == "SUM":
-#         result = Results(addition=(number + db_num))
-#     elif mode == "SUB":
-#         result = Results(subtraction=(number - db_num))
-#     elif mode == "PROD":
-#         result = Results(multiplication=(number * db_num))
-#     elif mode == "ALL":
-#         result = Results(
-#             addition=(number + db_num),
-#             subtraction=(number - db_num),
-#             multiplication=(number * db_num),
-#         )
-#     else:
-#         raise HTTPException(status_code=404, detail="Incorrect mode")
-#
-#     returns = Compute(db_number=db_num, results=result)
-#     return returns

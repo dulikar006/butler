@@ -69,44 +69,6 @@ action_fields = {
 }
 
 
-action_route = '''
-You are an expert in customer service and front desk handling in Hotel industry.
-Your job is to follow below guidelines and identify the request action belongs to which category from below chat history and question.
-
-chat history: {chat_history}
-
-
-question: {question}
-
-
-action_criteria: {criteria}
-
-
-[GUIDELINES]
-1. Read the chat history to get an idea on the conversation and question.
-2. Focus on the question and given criteria and identify the category or criteria of the question from below list of categories.
-   - Restaurant/Food Orders - 1
-   - Shuttle/Transport Orders - 2
-   - Housekeeping Orders -3
-   - Laundry Service - 4
-   - Spa/Gym Booking - 5
-   - Wake-Up Calls - 6
-   - Event/Activity Bookings - 7
-3. If the question / requested action belongs to any of the above categories return the corresponding number of most suited category.
-4. Only return most suited category's number, do not return two or more numbers.
-5. If the question/action doesnt fit into any of the above mentioned categories, return 0.
-[GUIDELINES END]
-
-- do not invent new values or hallucinate.
-- Do not return code.
-- Do not return descriptions.
-- Output should be a dictionary, not a dictionary list.
-- Do not try to overfit into the category , if it doesnt fit into any categories, return 0.
-
-return output in below JSON format:
-result:["category": ""]
-'''
-
 
 action_route_consolidated = '''
 You are an expert in customer service and front desk handling in Hotel industry.
@@ -150,6 +112,61 @@ return output in below JSON format:
 result:["category": "", response: ""]
 '''
 
+action_route = '''
+You are an expert in customer service and front desk handling in Hotel industry.
+Your job is to follow below guidelines and identify the request action belongs to which category from below chat history and question.
+
+chat history: {chat_history}
+
+
+question: {question}
+
+
+action_criteria: {criteria}
+
+
+[GUIDELINES]
+1. Read the chat history to get an idea on the conversation and question.
+2. Focus on the question and given criteria and identify the category or criteria of the question from below list of categories.
+
+    {action_fields}
+    
+3. If the question / requested action belongs to any of the above categories return relevant action_id.
+4. Do not use two or more categories.
+5. Only return most suited category's number, do not return two or more numbers.
+6. If the question/action doesnt fit into any of the above mentioned categories, return 0.
+[GUIDELINES END]
+
+- do not invent new values or hallucinate.
+- Do not return code.
+- Do not return descriptions.
+- Output should be a dictionary, not a dictionary list.
+- Do not try to overfit into the category , if it doesnt fit into any categories, return 0.
+- return integer for category value.
+
+return output in below JSON format:
+result:["action_id": ""]
+'''
+
+parameters_prompting = '''
+You are an expert in customer service and front desk handling in Hotel industry.
+Your job is to get required details from the user.
+
+chat history: {chat_history}
+
+question: {question}
+
+required parameters: {required_params}
+
+- Make sure to only ask for mentioned details in required parameters, Don't ask for anything else.
+- do not invent new values or hallucinate.
+- Do not return code.
+- Do not return descriptions.
+- Output should be response to the customer to get required parameters
+
+
+return output as a human prompting data from the customer
+'''
 
 order_details_validation = '''
 You are an expert in customer service and front desk handling in Hotel industry.
@@ -162,12 +179,12 @@ user_response: {user_response}
 
 order_category: {order_category}
 
-required fields to fulfill the order: {action_fields}
+required fields to fulfill the order: {params_input}
 
 
 [GUIDELINES]
-1. Read the response and order_category.
-2. Identify required fields for given order category.
+1. Read the response along with chat history and order_category.
+2. Identify required fields from response and chat history.
 3. Check if all the required fields been answered by the user, return order_details as True else if any required field is missing return False.
 4. If user answered all the required fields, generate a dictionary of values to create the order in the system as order creation details..
 5. Try your best to fit response into order, if at least most important required fields can be filled, proceed with the order.

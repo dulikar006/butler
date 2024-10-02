@@ -47,32 +47,31 @@ class RedisCacheManager(RedisClient):
         key = f"order_:{user_id}"
         self.connection.delete(key)
         self.connection.close()
-
     '''order_creation_helper_ends_here'''
 
-    def store_table_row(self, name, description, criteria):
-        row_id = self.get_next_id()
-        row_data = {
-            "id": row_id,
-            "name": name,
-            "description": description,
-            "criteria": criteria
-        }
-        self.connection.rpush("table_data", json.dumps(row_data))
-        self.connection.close()
-
-    def get_next_id(self):
-        table_data = self.get_table_data()
-        return len(table_data) + 1
-
-    def get_table_data(self):
-        table_data = self.connection.lrange("table_data", 0, -1)
-        self.connection.close()
-        return [json.loads(row) for row in table_data]
-
-    def delete_all_rows(self):
-        self.connection.delete("table_data")
-        self.connection.close()
+    # def store_table_row(self, name, description, criteria):
+    #     row_id = self.get_next_id()
+    #     row_data = {
+    #         "id": row_id,
+    #         "name": name,
+    #         "description": description,
+    #         "criteria": criteria
+    #     }
+    #     self.connection.rpush("table_data", json.dumps(row_data))
+    #     self.connection.close()
+    #
+    # def get_next_id(self):
+    #     table_data = self.get_table_data()
+    #     return len(table_data) + 1
+    #
+    # def get_table_data(self):
+    #     table_data = self.connection.lrange("table_data", 0, -1)
+    #     self.connection.close()
+    #     return [json.loads(row) for row in table_data]
+    #
+    # def delete_all_rows(self):
+    #     self.connection.delete("table_data")
+    #     self.connection.close()
 
     def delete_all(self):
         self.connection.flushdb()  # Deletes all keys from the current database

@@ -5,8 +5,9 @@ from fastapi.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 import auth as auth
+from database.order_manager import OrderManager
 from database.redis_cache_manager import RedisCacheManager
-from routers import router_1
+from routers import router_1, router_admin
 
 from fastapi.responses import HTMLResponse, RedirectResponse
 from starlette.requests import Request
@@ -23,24 +24,23 @@ templates = Jinja2Templates(directory="templates")
 # Route to display the table
 @app.get("/", response_class=HTMLResponse)
 async def get_table(request: Request):
-    redis_manager = RedisCacheManager()
-    redis_manager.connect()
-    table_data = redis_manager.get_table_data()
-    return templates.TemplateResponse("index.html", {"request": request, "table_data": table_data})
+    return
+    # redis_manager = RedisCacheManager()
+    # redis_manager.connect()
+    # table_data = redis_manager.get_table_data()
+    # return templates.TemplateResponse("index.html", {"request": request, "table_data": table_data})
 
 # Route to add a new row
 @app.post("/add", response_class=HTMLResponse)
 async def add_row(name: str = Form(...), description: str = Form(...), criteria: str = Form(...)):
-    redis_manager = RedisCacheManager()
-    redis_manager.connect()
-    redis_manager.store_table_row(name, description, criteria)
+    om = OrderManager()
+    om.store_table_row(name, description, criteria)
     return RedirectResponse(url="/", status_code=303)
 
 @app.post("/delete-all", response_class=HTMLResponse)
 async def delete_all_rows():
-    redis_manager = RedisCacheManager()
-    redis_manager.connect()
-    redis_manager.delete_all_rows()
+    om = OrderManager()
+    om.delete_all_rows()
     return RedirectResponse(url="/", status_code=303)
 
 @app.get("/test-auth/")
@@ -53,6 +53,7 @@ async def test(authorized: bool = Depends(auth.validate)):
 
 # Import all the routers that you need
 app.include_router(router_1.router)
+app.include_router(router_admin.router)
 
 
 # # Main function to execute FastAPI

@@ -1,12 +1,14 @@
 import json
 
 from clients.openai_client import call_openai
+from clients.postgres_client import PostgresClient
 from clients.twillio_client import TwillioClient
 from database.redis_cache_manager import RedisCacheManager
+from helpers.history_helpers import get_chat_history, update_history
 from helpers.json_helper import convert_to_json
 from helpers.load_response import generate_response
 from transformers.order_creation_transformer import extract_whatsapp_data_for_order_creation
-from utilities.prompts import action_identification, action_fields, action_route_consolidated
+from utilities.prompts import action_identification, action_route, parameters_prompting
 
 
 def extract_whatsapp_data(data: dict):
@@ -44,6 +46,7 @@ def extract_whatsapp_data(data: dict):
             '''check if current question is about the booking or completely different, if different, ask still want to continue with the order'''
             response = extract_whatsapp_data_for_order_creation(profile_name, account_sid, category, body, chat_history)
             response += "\n - Shalini, Careline Agent."
+            update_history(account_sid, body, response)
             return response
 
     action, criteria = identify_action(chat_history, body)
@@ -54,13 +57,16 @@ def extract_whatsapp_data(data: dict):
 
         if is_category: #if identified action, respond to prompt required information
             update_history(account_sid, body, response)
+            if isinstance(response, dict):
+                response = f"Please provide these details to proceed with the order - {str(response)}"
             response += "\n - Shalini, Careline Agent."
             return response
 
         response = f'''I apologize, but I’m unable to assist with your request on {criteria} at the moment. However, I’ve informed my manager, and they will be in touch with you shortly. Please feel free to let me know if there’s anything else I can assist you with in the meantime.'''
         tc = TwillioClient()
         tc.connect()
-        tc.send_message(f"Hi Mr.Malaka, Our guest at room number 38 is requesting an action on {criteria}. Can you please do the needful. \n - Shalini, Careline Agent.")
+        tc.send_message(f"Hi Mr.Malaka, Our guest at room number 38 is requesting an action on {criteria}. Can you please do the needful. \n - Shalini, Careline Agent.",
+                        '94772608766')
 
     else:
         response = generate_response(body, chat_history=chat_history)
@@ -71,45 +77,13 @@ def extract_whatsapp_data(data: dict):
 
     return response
 
-    # return {
-    #     'sms_message_sid': sms_message_sid,
-    #     'profile_name': profile_name,
-    #     'message_type': message_type,
-    #     'sms_sid': sms_sid,
-    #     'wa_id': wa_id,
-    #     'sms_status': sms_status,
-    #     'body': body,
-    #     'to': to,
-    #     'num_segments': num_segments,
-    #     'referral_num_media': referral_num_media,
-    #     'message_sid': message_sid,
-    #     'account_sid': account_sid,
-    #     'from_whatsapp': from_whatsapp,
-    #     'api_version': api_version,
-    #     'attachment_description': attachment_description,
-    #     'chat_history': chat_history
-    # }
-
 
 # TO-DO
 def process_attachment_message(media_content_type, num_media, media_url, body):
     pass
 
 
-def get_chat_history(user_id):
-    rcm = RedisCacheManager()
-    rcm.connect()
-    history = rcm.get_conversation_history(user_id)
-    if isinstance(history, list) and len(history)>0:
-        return history
-    print('error loading cache history')
-    return []
 
-def update_history(user_id, question, response):
-    rcm = RedisCacheManager()
-    rcm.connect()
-    rcm.store_conversation(user_id, 'user', question, expire_time=3600)
-    rcm.store_conversation(user_id, 'agent', response, expire_time=3600)
 
 def identify_action(chat_history, question):
     json_string = call_openai(action_identification, {"chat_history": chat_history, "question": question})
@@ -119,14 +93,31 @@ def identify_action(chat_history, question):
     return action, criteria
 
 def route_action(user_id, chat_history, question, criteria):
-    json_string = call_openai(action_route_consolidated, {"chat_history": chat_history, "question": question,
-                                                      "criteria": criteria, "action_fields": action_fields})
+
+    pc = PostgresClient()
+    pc.connect()
+    actions_list = pc.fetch_all('select id, function, name, description from public.actions')
+
+    output = ""
+    for i, (order_id, function, order_name, order_desc) in enumerate(actions_list, 1):
+        output += f"   - {function} - {order_name} - {order_desc} - action_id - {order_id}\n"
+
+    json_string = call_openai(action_route, {"chat_history": chat_history, "question": question,
+                                                      "criteria": criteria, "action_fields": output})
     result_dict = convert_to_json(json_string)
-    category = int(result_dict.get('category'))
-    response = result_dict.get('response')
-    if category == 0:
-        return False, response
+    action_id = int(result_dict.get('action_id'))
+    if action_id == 0:
+        return False, None
+
+    sql = f'select distinct fields from public.actions where id = {action_id}'
+    required_params = pc.fetch_one(sql)
+    params_input = ""
+    for item in required_params[0]:
+        params_input += f"{item['detail']} (Example: {item['example']}, {item['mandatory_optional']})\n"
+
+    response = call_openai(parameters_prompting, {"chat_history": chat_history, "question": question,
+                                                          "criteria": criteria, "required_params": params_input})
     rcm = RedisCacheManager()
     rcm.connect()
-    rcm.add_is_order_creation(user_id, category)
+    rcm.add_is_order_creation(user_id, action_id)
     return True, response
