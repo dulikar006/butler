@@ -53,8 +53,12 @@ class AdminManager:
         return new_brochure
 
     # Actions DB Operations
-    async def add_action(self, session: AsyncSession, name: str, description: str, fields: list):
-        new_action = Action(name=name, description=description, fields=fields)
+    async def add_action(self, session: AsyncSession, function: str, name: str, description: str, fields: list):
+        field_list = [
+            {"detail": detail, "example": example, "mandatory_optional": mandatory}
+            for detail, example, mandatory in zip(fields["details"], fields["examples"], fields["mandatory_optional"])
+        ]
+        new_action = Action(function=function, name=name, description=description, fields=field_list)
         session.add(new_action)
         await session.commit()
         await session.refresh(new_action)

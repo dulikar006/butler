@@ -69,6 +69,7 @@ async def handle_upload_brochures(
 
 @router.post("/add-action")
 async def add_action(
+    f_name: str = Form(...),
     a_name: str = Form(...),
     a_description: str = Form(...),
     required_details: List[str] = Form(...),
@@ -78,6 +79,7 @@ async def add_action(
 ):
     action_data = await admin_manager.add_action(
         session=db,
+        function=f_name,
         name=a_name,
         description=a_description,
         fields={

@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+
 class Customer(Base):
     __tablename__ = "customers"
 
@@ -12,6 +13,7 @@ class Customer(Base):
     room_number = Column(Integer)
     checkout_date = Column(String)
 
+
 class UploadedFile(Base):
     __tablename__ = "uploaded_files"
 
@@ -19,6 +21,7 @@ class UploadedFile(Base):
     criteria = Column(String)
     description = Column(String)
     filename = Column(String)
+
 
 class Brochure(Base):
     __tablename__ = "brochures"
@@ -28,10 +31,12 @@ class Brochure(Base):
     description = Column(String)
     filename = Column(String)
 
+
 class Action(Base):
     __tablename__ = "actions"
 
     id = Column(Integer, primary_key=True, index=True)
+    function = Column(String)
     name = Column(String)
     description = Column(String)
     fields = Column(JSON)  # Store as JSON to handle dynamic fields
