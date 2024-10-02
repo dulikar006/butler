@@ -1,7 +1,8 @@
 import os
+
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.future import select
+from sqlalchemy.orm import sessionmaker
 
 from models.admin_models import Customer, UploadedFile, Brochure, Action
 
@@ -29,8 +30,10 @@ class AdminManager:
         customers = result.scalars().all()
         return customers
 
-    async def add_customer(self, session: AsyncSession, name: str, phone_number: str, room_number: int, checkout_date: str):
-        new_customer = Customer(name=name, phone_number=phone_number, room_number=room_number, checkout_date=checkout_date)
+    async def add_customer(self, session: AsyncSession, name: str, phone_number: str, room_number: int,
+                           checkout_date: str):
+        new_customer = Customer(name=name, phone_number=phone_number, room_number=room_number,
+                                checkout_date=checkout_date)
         session.add(new_customer)
         await session.commit()
         await session.refresh(new_customer)

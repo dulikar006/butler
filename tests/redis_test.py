@@ -33,9 +33,17 @@ class RedisClient:
         self.connection.delete(key)
         self.connection.close()
 
+    def delete_all(self):
+        self.connection.flushdb()  # Deletes all keys from the current database
+        self.connection.close()
 
-account_sid = 'AC7ace3468f7e53936b2c49e16ad354814'
-redis_manager = RedisClient()
-redis_manager.connect()
-print(redis_manager.is_order_creation(account_sid))
-redis_manager.delete_order_creation(account_sid)
+# account_sid = 'AC7ace3468f7e53936b2c49e16ad354814'
+# redis_manager = RedisClient()
+# redis_manager.connect()
+# # print(redis_manager.is_order_creation(account_sid))
+# # redis_manager.delete_order_creation(account_sid)
+
+
+# redis_manager = RedisClient()
+# redis_manager.connect()
+# redis_manager.delete_all()

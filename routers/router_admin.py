@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 from typing import List
 
+from clients.twillio_client import TwillioClient
 from database.admin_manager import AdminManager
 from database.order_manager import OrderManager
 
@@ -44,6 +45,13 @@ async def create_customer(
 ):
     new_customer = await admin_manager.add_customer(session=db, name=name, phone_number=phone_number,
                                                     room_number=room_number, checkout_date=checkout_date)
+
+    tc = TwillioClient()
+    tc.connect()
+    tc.send_message(
+        f"Hi Mr.{name}, Thank you for staying with us at Avani Kaluthara Resort and Spa. Can we do anything for you at this point ? \n - Shalini, Careline Agent.",
+    phone_number)
+
     return RedirectResponse(url="/admin", status_code=303)
 
 @router.post("/upload-file")
