@@ -1,3 +1,5 @@
+import os
+
 import psycopg2
 from psycopg2 import sql
 from psycopg2 import Error
@@ -6,13 +8,14 @@ from psycopg2 import Error
 class PostgresClient:
     def __init__(self):
         """Initialize connection parameters."""
-        self.dbname = 'mydatabase'
-        self.user = 'myuser'
-        self.password = 'mypassword'
-        self.host = 'localhost'
+        self.dbname = 'postgres'
+        self.user = 'butler_admin'
+        self.password = os.environ['postgres_pw']
+        self.host = 'butler-dev-database.postgres.database.azure.com'
         self.port = '5432'
         self.connection = None
         self.cursor = None
+
 
     def connect(self):
         """Create a connection to the database."""

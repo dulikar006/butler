@@ -8,6 +8,7 @@ class Customer(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
+    phone_number = Column(String, index=True)
     room_number = Column(Integer)
     checkout_date = Column(String)
 

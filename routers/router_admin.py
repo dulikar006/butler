@@ -37,11 +37,13 @@ async def get_customers(request: Request, limit: int = 100, db: AsyncSession = D
 @router.post("/add-customer")
 async def create_customer(
     name: str = Form(...),
+    phone_number: str = Form(...),
     room_number: int = Form(...),
     checkout_date: str = Form(...),
     db: AsyncSession = Depends(admin_manager.get_db_session)
 ):
-    new_customer = await admin_manager.add_customer(session=db, name=name, room_number=room_number, checkout_date=checkout_date)
+    new_customer = await admin_manager.add_customer(session=db, name=name, phone_number=phone_number,
+                                                    room_number=room_number, checkout_date=checkout_date)
     return RedirectResponse(url="/admin", status_code=303)
 
 @router.post("/upload-file")
