@@ -24,50 +24,35 @@ return output in below JSON format:
 result:["criteria": "", "action": "True or False"]
 '''
 
-action_fields = {
-    "Restaurant/Food Orders": {
-        "Meal type": "Room Food Delivery",
-        "Menu selection": "Required Menu Item Name",
-        "Special dietary preferences": ["Vegan", "Vegetarian", "Gluten-free", "etc."],
-        "Delivery time": ["Immediate", "Scheduled for later"],
-        "Room number": "To ensure the order is delivered to the correct room",
-        "Payment method": ["Room charge", "Pay via card/cash on delivery"]
-    },
-    "Shuttle/Transport Orders": {
-        "Pickup time": "When the shuttle should arrive",
-        "Pickup location": ["Hotel", "Nearby attraction"],
-        "Drop-off location": "Where the guest needs to go",
-        "Number of passengers": "To ensure enough seats are available",
-        "Special requests": ["Baby seats", "Luggage assistance", "etc."]
-    },
-    "Housekeeping Orders": {
-        "Service type": ["Full room cleaning", "Towel replacement", "Washroom cleaning", "Bed linen change"],
-        "Preferred time": ["Immediate", "Scheduled time"],
-        "Additional requests": ["Extra toiletries", "Water bottles", "etc."],
-        "Urgency level": ["Immediate", "Routine"]
-    },
-    "Laundry Service": {
-        "Type of items": ["Clothes", "Bed linen", "Towels", "etc."],
-        "Service required": ["Washing", "Ironing", "Dry cleaning"],
-        "Pickup and delivery times": "Schedule for collection and return",
-        "Special instructions": ["Delicate fabrics", "etc."]
-    },
-    "Spa/Gym Booking": {
-        "Service type": ["Massage", "Facial", "Personal training session"],
-        "Preferred time and date": "Appointment scheduling",
-        "Special preferences": ["Gender preference for therapist", "etc."]
-    },
-    "Wake-Up Calls": {
-        "Wake-up time": ["Exact time", "Time range"],
-        "Additional requests": ["Coffee delivery", "Breakfast setup"]
-    },
-    "Event/Activity Bookings": {
-        "Event type": ["Yoga session", "Local tours", "In-house events"],
-        "Time and date": "Schedule for participation",
-        "Special requests": ["Group bookings", "Special assistance", "etc."]
-    }
-}
+reconsider_order_creation = '''
+You are an expert in customer service and front desk handling in Hotel industry.
+Your job is to follow below guidelines and identify the request from below chat history and question
 
+chat history: {chat_history}
+
+category: {category}
+
+question: {question}
+
+
+[GUIDELINES]
+1. Read the chat history to get an idea on the conversation and question.
+2. Focus on the question and identify if the user is continuing with the current order on given category.
+3. Or Identify if user doesnt want continue with the current order.
+4. Identify users intent on above mentioned points and Based on users intent return,
+    - If user doesnt wants to continue with the order on given category, action - 0 , response - generate a response to ask user if want any other help.
+    - If user is asking or requesting something that doesnt related to given category, action - 1 , response - generate a response to ask user if want to continue with order on current category or not.
+    - If none of the above are true , action - 2, response - empty
+[GUIDELINES END]
+
+- do not invent new values or hallucinate.
+- Do not return code.
+- Do not return descriptions.
+- Output should be a dictionary, not a dictionary list.
+
+return output in below JSON format:
+result:["action": "", "response": ""]
+'''
 
 
 action_route_consolidated = '''
