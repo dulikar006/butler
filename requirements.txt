@@ -35,3 +35,8 @@ asyncpg
 databases
 psycopg2
 azure-storage-blob
+
+
+Pillow
+pandas
+openpyxl

@@ -6,10 +6,11 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.requests import Request
 from fastapi.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
-from typing import List
+from typing import List, Optional
 
 from clients.twillio_client import TwillioClient
 from database.admin_manager import AdminManager
+from database.mongo_db_manager import upload_file, upload_information
 from database.order_manager import OrderManager
 
 router = APIRouter(prefix="/admin")
@@ -58,11 +59,18 @@ async def create_customer(
 async def handle_upload_file(
     criteria: str = Form(...),
     description: str = Form(...),
-    information: str = Form(...),
+    information: Optional[str] = Form(None),
     file: UploadFile = File(...),
     db: AsyncSession = Depends(admin_manager.get_db_session)
 ):
-    file_data = await admin_manager.upload_file(session=db, criteria=criteria, description=description, filename=file.filename)
+    file_data = await admin_manager.upload_file(session=db, criteria=criteria, description=description,
+                                                information=information, filename=file.filename)
+
+    if file:
+        file_content = await file.read()
+        upload_file(file.filename, file_content)
+    if information:
+        upload_information(information)
 
     return RedirectResponse(url="/admin", status_code=303)
 
