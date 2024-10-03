@@ -20,6 +20,7 @@ class UploadedFile(Base):
     id = Column(Integer, primary_key=True, index=True)
     criteria = Column(String)
     description = Column(String)
+    information = Column(String)
     filename = Column(String)
 
 

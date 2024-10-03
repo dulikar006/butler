@@ -34,3 +34,4 @@ sqlalchemy
 asyncpg
 databases
 psycopg2
+azure-storage-blob

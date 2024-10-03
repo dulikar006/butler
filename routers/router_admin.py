@@ -58,10 +58,12 @@ async def create_customer(
 async def handle_upload_file(
     criteria: str = Form(...),
     description: str = Form(...),
+    information: str = Form(...),
     file: UploadFile = File(...),
     db: AsyncSession = Depends(admin_manager.get_db_session)
 ):
     file_data = await admin_manager.upload_file(session=db, criteria=criteria, description=description, filename=file.filename)
+
     return RedirectResponse(url="/admin", status_code=303)
 
 @router.post("/upload-brochures-file")
