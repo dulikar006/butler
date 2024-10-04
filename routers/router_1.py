@@ -17,7 +17,10 @@ async def whatsapp_reply(request: Request):
     form_data = await request.form()
     form_dict = dict(form_data)
 
-    response = extract_whatsapp_data(form_dict)
+    try:
+        response = extract_whatsapp_data(form_dict)
+    except:
+        response = None
 
     # response = execute_agent(data)
 
@@ -27,6 +30,12 @@ async def whatsapp_reply(request: Request):
         resp.message(response)
         # Return the TwiML response as a string
         return Response(content=str(resp), media_type="text/xml")
+
+    response = f"All our agents are busy at the moments, Can you please reconnect with us in few seconds..\n - Careline Service."
+    resp = MessagingResponse()
+    resp.message(response)
+    # Return the TwiML response as a string
+    return Response(content=str(resp), media_type="text/xml")
 
 
 @router.post("/get_message_test")
