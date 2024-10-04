@@ -231,12 +231,21 @@ input[type="submit"]:hover {
 
                 <input type="submit" value="Add Customer">
             </form>
-            <h2>Registered Customers</h2>
-            <ul>
+         <h2>Registered Customers</h2>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Room Number</th>
+                    <th>Checkout Date</th>
+                </tr>
                 {% for customer in customers %}
-                <li>{{ customer.name }} - Room {{ customer.room_number }} (Checkout: {{ customer.checkout_date }})</li>
+                <tr>
+                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.room_number }}</td>
+                    <td>{{ customer.checkout_date }}</td>
+                </tr>
                 {% endfor %}
-            </ul>
+            </table>
         </div>
 
         <!-- Tab 2: Upload Files -->

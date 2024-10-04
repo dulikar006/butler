@@ -1,5 +1,6 @@
 import os
 
+from sqlalchemy import distinct
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.future import select
 from sqlalchemy.orm import sessionmaker
@@ -29,6 +30,14 @@ class AdminManager:
         result = await session.execute(query)
         customers = result.scalars().all()
         return customers
+
+    async def fetch_distinct_functions_and_names(self, session: AsyncSession, limit=100):
+        query = select(distinct(Action.function), Action.name).limit(limit)
+        result = await session.execute(query)
+        functions_and_names = result.all()
+
+        # Convert result to a list of dictionaries for easier serialization
+        return [{"function": row[0], "name": row[1]} for row in functions_and_names]
 
     async def add_customer(self, session: AsyncSession, name: str, phone_number: str, room_number: int,
                            checkout_date: str):

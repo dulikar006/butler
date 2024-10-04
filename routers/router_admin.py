@@ -24,9 +24,17 @@ order_manager = OrderManager()
 
 # Route to display the table
 @router.get("/", response_class=HTMLResponse)
-def get_table(request: Request):
-    table_data = order_manager.get_table_data()  # Call the method synchronously
-    return templates.TemplateResponse("index.html", {"request": request, "table_data": table_data})
+async def get_table(request: Request, limit: int = 100, db: AsyncSession = Depends(admin_manager.get_db_session)):
+    table_data = order_manager.get_table_data()
+    customers = await admin_manager.fetch_all_customers(session=db, limit=limit)
+    functions = await admin_manager.fetch_distinct_functions_and_names(session=db, limit=limit)
+
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "table_data": table_data,
+        "customers": customers,
+        "functions": functions
+    })
 
 
 # Use dependency injection for the database session
