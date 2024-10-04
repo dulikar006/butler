@@ -10,9 +10,7 @@ from clients.mongo_client import MongoDBClient
 import uuid
 import pandas as pd
 from PIL import Image
-import pytesseract  # For OCR to extract text from images
 
-from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 from clients.openai_client import llm
@@ -58,13 +56,6 @@ def upload_file(file_name, file_content):
             split_docs = [Document(page_content=str(page)) for page in pages if page]
 
         elif file_type in ['jpg', 'jpeg', 'png']:
-            # try:
-            #     # Handle image (JPG/PNG) and use OCR to extract text
-            #     image = Image.open(BytesIO(file_content))
-            #     pages = pytesseract.image_to_string(image)  # Extract text from image using OCR
-            # except:
-            #     pages = None
-            # if not pages:
             # Create a BytesIO object to save the image
             buffered = BytesIO()
             image = Image.open(BytesIO(file_content))
