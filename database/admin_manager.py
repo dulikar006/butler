@@ -40,8 +40,8 @@ class AdminManager:
         return new_customer
 
     # Uploaded Files DB Operations
-    async def upload_file(self, session: AsyncSession, criteria: str, description: str, filename: str):
-        new_file = UploadedFile(criteria=criteria, description=description, filename=filename)
+    async def upload_file(self, session: AsyncSession, criteria: str, description: str, information: str, filename: str):
+        new_file = UploadedFile(criteria=criteria, description=description, information=information, filename=filename)
         session.add(new_file)
         await session.commit()
         await session.refresh(new_file)
