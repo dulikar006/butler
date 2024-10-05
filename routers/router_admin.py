@@ -121,6 +121,20 @@ async def add_action(
     )
     return RedirectResponse(url="/admin", status_code=303)
 
+@router.post("/push-notifications")
+async def handle_upload_brochures(
+        p_number: str = Form(...),
+        n_message: str = Form(...),
+        s_ref: str = Form(...),
+):
+
+    message = n_message + ' \n  ' + s_ref
+    tc = TwillioClient()
+    tc.connect()
+    tc.send_message(message, p_number)
+
+    return RedirectResponse(url="/admin", status_code=303)
+
 
 @atexit.register
 def cleanup():

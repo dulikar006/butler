@@ -33,7 +33,8 @@ def extract_whatsapp_data(data: dict):
         media_url = data.get('MediaUrl0')
         attachment_description = process_attachment_message(media_content_type, num_media, media_url, body)
 
-    chat_history = get_chat_history(account_sid)  # get chat history
+    all_chat_history = get_chat_history(account_sid)# get chat history
+    chat_history = all_chat_history[-5:]
 
     # check if the message is part of order creation process
     redis_manager = RedisCacheManager()

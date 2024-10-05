@@ -209,6 +209,7 @@ input[type="submit"]:hover {
             <div class="tab" onclick="showTab(2)">Brochures Files</div>
               <div class="tab" onclick="showTab(3)">Add Order Actions</div>
              <div class="tab" onclick="showTab(4)">Existing Orders</div>
+             <div class="tab" onclick="showTab(5)">Notifications</div>
         </div>
 
         <!-- Tab 1: Enroll Hotel Customers -->
@@ -359,6 +360,30 @@ input[type="submit"]:hover {
                 {% endfor %}
             </table>
         </div>
+
+           <!-- Tab 6: Push Notifications -->
+       <div class="tab-content">
+            <h2>Generate Notifications</h2>
+            <form action="push-notifications" method="post">
+                <div class="form-group">
+                    <label for="p_number">Phone Number:</label>
+                    <input type="text" id="p_number" name="p_number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="n_message">Message:</label>
+                    <input type="text" id="n_message" name="n_message" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="s_ref">Sender Reference:</label>
+                    <input type="text" id="s_ref" name="s_ref" required>
+                </div>
+
+                <input type="submit" value="Send Notification">
+            </form>
+       </div>
+
     </div>
 </body>
 </html>

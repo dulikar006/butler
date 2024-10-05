@@ -171,6 +171,7 @@ required fields to fulfill the order: {params_input}
 [GUIDELINES]
 1. Read the response along with chat history and order_category.
 2. Identify required fields from response and chat history.
+3. Make sure to check if incase user already answered required fields in chat history.
 3. Check if all the required fields been answered by the user, return order_details as True else if any required field is missing return False.
 4. If user answered all the required fields, generate a dictionary of values to create the order in the system as order creation details..
 5. Try your best to fit response into order, if at least most important required fields can be filled, proceed with the order.
