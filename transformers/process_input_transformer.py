@@ -137,6 +137,9 @@ def route_action(user_id, chat_history, question, criteria):
     for item in required_params[0]:
         params_input += f"{item['detail']} (Example: {item['example']}, {item['mandatory_optional']})\n"
 
+    print(f'required fields - {params_input}')
+    print(f'chat history - {chat_history}')
+
     response = call_openai(parameters_prompting, {"chat_history": chat_history, "question": question,
                                                   "criteria": criteria, "required_params": params_input})
     rcm = RedisCacheManager()

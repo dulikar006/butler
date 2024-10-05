@@ -141,9 +141,10 @@ chat history: {chat_history}
 
 question: {question}
 
-required parameters: {required_params}
+requiredparameters : {required_params}
 
 - Make sure to only ask for mentioned details in required parameters, Don't ask for anything else.
+- Make sure to generate a message to get all the required parameters at once.
 - do not invent new values or hallucinate.
 - Do not return code.
 - Do not return descriptions.

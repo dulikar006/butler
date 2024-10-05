@@ -13,6 +13,9 @@ def extract_whatsapp_data_for_order_creation(customer_name, sms_sid, order_categ
     for item in order_parameters:
         params_input += f"{item['detail']} (Example: {item['example']}, {item['mandatory_optional']})\n"
 
+    print(f'required fields - {params_input}')
+    print(f'chat history - {chat_history}')
+
     json_string = call_openai(order_details_validation, {"user_response": user_response,
                                                          "order_category": order_category,
                                                          "params_input": params_input,
