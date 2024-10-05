@@ -51,18 +51,27 @@ async def create_customer(
         name: str = Form(...),
         phone_number: str = Form(...),
         room_number: int = Form(...),
+
+        gender: str = Form(...),
+        age: str = Form(...),
+        family_members: str = Form(...),
+        add_details: str = Form(...),
+
         checkout_date: str = Form(...),
         db: AsyncSession = Depends(admin_manager.get_db_session)
 ):
     new_customer = await admin_manager.add_customer(session=db, name=name, phone_number=phone_number,
-                                                    room_number=room_number, checkout_date=checkout_date)
+                                                    room_number=room_number, checkout_date=checkout_date,
+                                                    gender=gender, age=age, family_members=family_members,
+                                                    add_details=add_details
+                                                    )
 
     tc = TwillioClient()
     tc.connect()
     # tc.send_message(
     #     f"Hi Mr.{name}, A warm welcome to Avani Kalutara Resort and Spa! We're delighted to have you with us. If there’s anything we can do to make your stay more comfortable or special, please don't hesitate to let us know. We’re here for you at every moment. ? \n - Shalini, Careline Agent.",
     #     phone_number)
-    tc.send_template_message(name, "Avani Kalutara Resort and Spa", "- Shalini, Careline Agent", phone_number)
+    tc.send_template_message(name, "Avani Kalutara Resort and Spa", " Shalini, Careline Agent", phone_number)
 
     return RedirectResponse(url="/admin", status_code=303)
 

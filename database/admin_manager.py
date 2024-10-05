@@ -40,9 +40,12 @@ class AdminManager:
         return [{"function": row[0], "name": row[1]} for row in functions_and_names]
 
     async def add_customer(self, session: AsyncSession, name: str, phone_number: str, room_number: int,
+                           gender: str, age: str, family_members: str, add_details: str,
                            checkout_date: str):
         new_customer = Customer(name=name, phone_number=phone_number, room_number=room_number,
-                                checkout_date=checkout_date)
+                                checkout_date=checkout_date, gender=gender, age=age, family_members=family_members,
+                                add_details=add_details
+                                )
         session.add(new_customer)
         await session.commit()
         await session.refresh(new_customer)
