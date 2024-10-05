@@ -59,9 +59,10 @@ async def create_customer(
 
     tc = TwillioClient()
     tc.connect()
-    tc.send_message(
-        f"Hi Mr.{name}, A warm welcome to Avani Kalutara Resort and Spa! We're delighted to have you with us. If there’s anything we can do to make your stay more comfortable or special, please don't hesitate to let us know. We’re here for you at every moment. ? \n - Shalini, Careline Agent.",
-        phone_number)
+    # tc.send_message(
+    #     f"Hi Mr.{name}, A warm welcome to Avani Kalutara Resort and Spa! We're delighted to have you with us. If there’s anything we can do to make your stay more comfortable or special, please don't hesitate to let us know. We’re here for you at every moment. ? \n - Shalini, Careline Agent.",
+    #     phone_number)
+    tc.send_template_message(name, "Avani Kalutara Resort and Spa", "- Shalini, Careline Agent", phone_number)
 
     return RedirectResponse(url="/admin", status_code=303)
 
@@ -122,7 +123,7 @@ async def add_action(
     return RedirectResponse(url="/admin", status_code=303)
 
 @router.post("/push-notifications")
-async def handle_upload_brochures(
+async def push_notifications(
         p_number: str = Form(...),
         n_message: str = Form(...),
         s_ref: str = Form(...),
