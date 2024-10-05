@@ -22,6 +22,7 @@ templates = Jinja2Templates(directory="templates")
 admin_manager = AdminManager()
 order_manager = OrderManager()
 
+
 # Route to display the table
 @router.get("/", response_class=HTMLResponse)
 async def get_table(request: Request, limit: int = 100, db: AsyncSession = Depends(admin_manager.get_db_session)):
@@ -44,13 +45,14 @@ async def get_customers(request: Request, limit: int = 100, db: AsyncSession = D
     return customers
     # return templates.TemplateResponse("index.html", {"request": request, "customers": customers})
 
+
 @router.post("/add-customer")
 async def create_customer(
-    name: str = Form(...),
-    phone_number: str = Form(...),
-    room_number: int = Form(...),
-    checkout_date: str = Form(...),
-    db: AsyncSession = Depends(admin_manager.get_db_session)
+        name: str = Form(...),
+        phone_number: str = Form(...),
+        room_number: int = Form(...),
+        checkout_date: str = Form(...),
+        db: AsyncSession = Depends(admin_manager.get_db_session)
 ):
     new_customer = await admin_manager.add_customer(session=db, name=name, phone_number=phone_number,
                                                     room_number=room_number, checkout_date=checkout_date)
@@ -58,18 +60,19 @@ async def create_customer(
     tc = TwillioClient()
     tc.connect()
     tc.send_message(
-        f"Hi Mr.{name}, Thank you for staying with us at Avani Kaluthara Resort and Spa. Can we do anything for you at this point ? \n - Shalini, Careline Agent.",
-    phone_number)
+        f"Hi Mr.{name}, A warm welcome to Avani Kalutara Resort and Spa! We're delighted to have you with us. If there’s anything we can do to make your stay more comfortable or special, please don't hesitate to let us know. We’re here for you at every moment. ? \n - Shalini, Careline Agent.",
+        phone_number)
 
     return RedirectResponse(url="/admin", status_code=303)
 
+
 @router.post("/upload-file")
 async def handle_upload_file(
-    criteria: str = Form(...),
-    description: str = Form(...),
-    information: Optional[str] = Form(None),
-    file: UploadFile = File(...),
-    db: AsyncSession = Depends(admin_manager.get_db_session)
+        criteria: str = Form(...),
+        description: str = Form(...),
+        information: Optional[str] = Form(None),
+        file: UploadFile = File(...),
+        db: AsyncSession = Depends(admin_manager.get_db_session)
 ):
     file_data = await admin_manager.upload_file(session=db, criteria=criteria, description=description,
                                                 information=information, filename=file.filename)
@@ -82,26 +85,28 @@ async def handle_upload_file(
 
     return RedirectResponse(url="/admin", status_code=303)
 
+
 @router.post("/upload-brochures-file")
 async def handle_upload_brochures(
-    criteria: str = Form(...),
-    description: str = Form(...),
-    file: UploadFile = File(...),
-    db: AsyncSession = Depends(admin_manager.get_db_session)
+        criteria: str = Form(...),
+        description: str = Form(...),
+        file: UploadFile = File(...),
+        db: AsyncSession = Depends(admin_manager.get_db_session)
 ):
-    brochure_data = await admin_manager.upload_brochures(session=db, criteria=criteria, description=description, filename=file.filename)
+    brochure_data = await admin_manager.upload_brochures(session=db, criteria=criteria, description=description,
+                                                         filename=file.filename)
     return RedirectResponse(url="/admin", status_code=303)
 
 
 @router.post("/add-action")
 async def add_action(
-    f_name: str = Form(...),
-    a_name: str = Form(...),
-    a_description: str = Form(...),
-    required_details: List[str] = Form(...),
-    example_values: List[str] = Form(...),
-    mandatory_optional: List[str] = Form(...),
-    db: AsyncSession = Depends(admin_manager.get_db_session)
+        f_name: str = Form(...),
+        a_name: str = Form(...),
+        a_description: str = Form(...),
+        required_details: List[str] = Form(...),
+        example_values: List[str] = Form(...),
+        mandatory_optional: List[str] = Form(...),
+        db: AsyncSession = Depends(admin_manager.get_db_session)
 ):
     action_data = await admin_manager.add_action(
         session=db,
@@ -115,6 +120,7 @@ async def add_action(
         }
     )
     return RedirectResponse(url="/admin", status_code=303)
+
 
 @atexit.register
 def cleanup():
