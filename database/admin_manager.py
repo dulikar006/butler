@@ -1,6 +1,6 @@
 import os
 
-from sqlalchemy import distinct
+from sqlalchemy import distinct, and_
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.future import select
 from sqlalchemy.orm import sessionmaker
@@ -50,6 +50,7 @@ class AdminManager:
         await session.commit()
         await session.refresh(new_customer)
         return new_customer
+
 
     # Uploaded Files DB Operations
     async def upload_file(self, session: AsyncSession, criteria: str, description: str, information: str, filename: str):

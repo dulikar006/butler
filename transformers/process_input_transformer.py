@@ -13,6 +13,7 @@ def extract_whatsapp_data(data: dict):
     profile_name = data.get('ProfileName')
     body = data.get('Body')
     account_sid = data.get('AccountSid')
+    customer_details = data.get("customer_details")
 
     # sms_message_sid = data.get('SmsMessageSid')
     # message_type = data.get('MessageType')
@@ -35,6 +36,7 @@ def extract_whatsapp_data(data: dict):
 
     all_chat_history = get_chat_history(account_sid)# get chat history
     chat_history = all_chat_history[-5:]
+    chat_history.append(customer_details)
 
     # check if the message is part of order creation process
     redis_manager = RedisCacheManager()
@@ -68,7 +70,7 @@ def extract_whatsapp_data(data: dict):
 
             # else go to order creation
             response = extract_whatsapp_data_for_order_creation(profile_name, account_sid,
-                                                                order_category, order_parameters, body, chat_history)
+                                                                order_category, order_parameters, body, chat_history, customer_details)
             response += "\n - Shalini, Careline Agent."
             update_history(account_sid, body, response)
             return response

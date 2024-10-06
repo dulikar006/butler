@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 import auth as auth
-from database.order_manager import OrderManager
+from database.postgres_manager import PostgresManager
 from database.redis_cache_manager import RedisCacheManager
 from routers import router_1, router_admin
 
@@ -31,17 +31,17 @@ async def get_table(request: Request):
     # return templates.TemplateResponse("index.html", {"request": request, "table_data": table_data})
 
 # Route to add a new row
-@app.post("/add", response_class=HTMLResponse)
-async def add_row(name: str = Form(...), description: str = Form(...), criteria: str = Form(...)):
-    om = OrderManager()
-    om.store_table_row(name, description, criteria)
-    return RedirectResponse(url="/", status_code=303)
-
-@app.post("/delete-all", response_class=HTMLResponse)
-async def delete_all_rows():
-    om = OrderManager()
-    om.delete_all_rows()
-    return RedirectResponse(url="/", status_code=303)
+# @app.post("/add", response_class=HTMLResponse)
+# async def add_row(name: str = Form(...), description: str = Form(...), criteria: str = Form(...)):
+#     om = PostgresManager()
+#     om.store_order_table_row(name, description, criteria)
+#     return RedirectResponse(url="/", status_code=303)
+#
+# @app.post("/delete-all", response_class=HTMLResponse)
+# async def delete_all_rows():
+#     om = PostgresManager()
+#     om.delete_all_rows()
+#     return RedirectResponse(url="/", status_code=303)
 
 @app.get("/test-auth/")
 async def test(authorized: bool = Depends(auth.validate)):

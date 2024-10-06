@@ -352,21 +352,41 @@ input[type="submit"]:hover {
         <!-- Tab 5: Existing Orders -->
         <div class="tab-content">
             <h2>Current Orders</h2>
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Criteria</th>
-                </tr>
-                {% for row in table_data %}
-                <tr>
-                    <td>{{ row.id }}</td>
-                    <td>{{ row.name }}</td>
-                    <td>{{ row.details }}</td>
-                    <td>{{ row.category }}</td>
-                </tr>
-                {% endfor %}
+              <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Criteria</th>
+                        <th>Function</th> <!-- Added Function column -->
+                        <th>Customer Details</th>
+                        <th>Status</th>     <!-- Added Status column -->
+                        <th>Created At</th> <!-- Added Created At column -->
+                        <th>Updated At</th> <!-- Added Updated At column -->
+                    </tr>
+                        </thead>
+                <tbody>
+                    {% if table_data %}
+                        {% for row in table_data %}
+                        <tr>
+                            <td>{{ row.id }}</td>
+                            <td>{{ row.name }}</td>
+                            <td>{{ row.description }}</td> <!-- Updated from row.details to row.description -->
+                            <td>{{ row.criteria }}</td>     <!-- Added Criteria column -->
+                            <td>{{ row.function }}</td>       <!-- Added Function column -->
+                            <td>{{ row.customer_details }}</td>
+                            <td>{{ row.status }}</td>         <!-- Added Status column -->
+                            <td>{{ row.created_at }}</td>     <!-- Added Created At column -->
+                            <td>{{ row.updated_at }}</td>     <!-- Added Updated At column -->
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="8">No current orders available.</td> <!-- Adjusted colspan to match the number of columns -->
+                        </tr>
+                    {% endif %}
+                </tbody>
             </table>
         </div>
 

@@ -11,7 +11,7 @@ from typing import List, Optional
 from clients.twillio_client import TwillioClient
 from database.admin_manager import AdminManager
 from database.mongo_db_manager import upload_file, upload_information
-from database.order_manager import OrderManager
+from database.postgres_manager import PostgresManager
 
 router = APIRouter(prefix="/admin")
 
@@ -20,13 +20,13 @@ router.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 # Initialize the AdminManager
 admin_manager = AdminManager()
-order_manager = OrderManager()
+order_manager = PostgresManager()
 
 
 # Route to display the table
 @router.get("/", response_class=HTMLResponse)
 async def get_table(request: Request, limit: int = 100, db: AsyncSession = Depends(admin_manager.get_db_session)):
-    table_data = order_manager.get_table_data()
+    table_data = order_manager.get_order_table_data()
     customers = await admin_manager.fetch_all_customers(session=db, limit=limit)
     functions = await admin_manager.fetch_distinct_functions_and_names(session=db, limit=limit)
 

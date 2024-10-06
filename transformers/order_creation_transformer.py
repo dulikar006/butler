@@ -1,5 +1,5 @@
 from clients.openai_client import call_openai
-from database.order_manager import OrderManager
+from database.postgres_manager import PostgresManager
 from database.redis_cache_manager import RedisCacheManager
 from helpers.history_helpers import update_history
 from helpers.json_helper import convert_to_json
@@ -7,7 +7,7 @@ from utilities.prompts import order_details_validation
 
 
 def extract_whatsapp_data_for_order_creation(customer_name, sms_sid, order_category,
-                                             order_parameters, user_response, chat_history):
+                                             order_parameters, user_response, chat_history, customer_details):
     params_input = ""
 
     for item in order_parameters:
@@ -29,8 +29,8 @@ def extract_whatsapp_data_for_order_creation(customer_name, sms_sid, order_categ
 
     if (isinstance(order_details, bool) and order_details is True) or \
             (isinstance(order_details, str) and order_details == 'True'):
-        om = OrderManager()
-        om.store_table_row(customer_name, str(order_creation_details), order_category)
+        om = PostgresManager()
+        om.store_order_table_row(customer_name, str(order_creation_details), order_category, customer_details)
 
         redis_manager = RedisCacheManager()
         redis_manager.connect()

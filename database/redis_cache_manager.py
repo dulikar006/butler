@@ -49,6 +49,25 @@ class RedisCacheManager(RedisClient):
         self.connection.close()
     '''order_creation_helper_ends_here'''
 
+
+    '''to check if a customer'''
+    def add_is_customer(self, phone_number, details, expire_time=3600):
+        key = f"customer_:{phone_number}"
+        self.connection.rpush(key, json.dumps(details))
+        self.connection.expire(key, expire_time)  # Expiration time in seconds
+        self.connection.close()
+    def is_customer(self, phone_number, limit=50):
+        key = f"customer_:{phone_number}"
+        messages = self.connection.lrange(key, -limit, -1)
+        self.connection.close()
+        return [json.loads(message) for message in messages]
+
+    def delete_customer(self, phone_number):
+        key = f"customer_:{phone_number}"
+        self.connection.delete(key)
+        self.connection.close()
+    '''customer check_helper_ends_here'''
+
     # def store_table_row(self, name, description, criteria):
     #     row_id = self.get_next_id()
     #     row_data = {

@@ -3,6 +3,7 @@ from fastapi.responses import Response
 from twilio.twiml.messaging_response import MessagingResponse
 
 from helpers.load_response import generate_response
+from transformers.check_customer_status import check_eligibility
 from transformers.process_input_transformer import extract_whatsapp_data
 
 # import src.auth as auth
@@ -16,6 +17,11 @@ async def whatsapp_reply(request: Request):
     # Get the incoming message
     form_data = await request.form()
     form_dict = dict(form_data)
+
+    customer_details = check_eligibility(form_dict.get('From'))
+    if not customer_details:
+        return None
+    form_data["customer_details"] = customer_details
 
     try:
         response = extract_whatsapp_data(form_dict)
@@ -42,7 +48,17 @@ async def whatsapp_reply(request: Request):
 def whatsapp_reply(Body: str = Form(...)):
     print('WhatsApp message hit and started')
     incoming_message = Body.lower()
-    response = extract_whatsapp_data({'ProfileName': 'test_name', 'Body': incoming_message, 'AccountSid': 'test2309239802091238', })
+
+    form_data = {'ProfileName': 'Isuri', 'Body': incoming_message, 'AccountSid': 'test2309239802091238'}
+
+    customer_details = check_eligibility('6582641468')
+    if not customer_details:
+        return None
+    form_data["customer_details"] = customer_details
+
+
+
+    response = extract_whatsapp_data(form_data)
     # response = execute_agent(data)
     if response:
         # Create a Twilio response object
