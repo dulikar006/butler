@@ -30,7 +30,7 @@ async def get_table(request: Request, limit: int = 100, db: AsyncSession = Depen
     customers = await admin_manager.fetch_all_customers(session=db, limit=limit)
     functions = await admin_manager.fetch_distinct_functions_and_names(session=db, limit=limit)
 
-    return templates.TemplateResponse("index.html", {
+    return templates.TemplateResponse("admin.html", {
         "request": request,
         "table_data": table_data,
         "customers": customers,
@@ -43,7 +43,7 @@ async def get_table(request: Request, limit: int = 100, db: AsyncSession = Depen
 async def get_customers(request: Request, limit: int = 100, db: AsyncSession = Depends(admin_manager.get_db_session)):
     customers = await admin_manager.fetch_all_customers(session=db, limit=limit)
     return customers
-    # return templates.TemplateResponse("index.html", {"request": request, "customers": customers})
+    # return templates.TemplateResponse("admin.html", {"request": request, "customers": customers})
 
 
 @router.post("/add-customer")

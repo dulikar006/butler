@@ -24,11 +24,11 @@ templates = Jinja2Templates(directory="templates")
 # Route to display the table
 @app.get("/", response_class=HTMLResponse)
 async def get_table(request: Request):
-    return
+    return templates.TemplateResponse("index.html", {"request": request})
     # redis_manager = RedisCacheManager()
     # redis_manager.connect()
     # table_data = redis_manager.get_table_data()
-    # return templates.TemplateResponse("index.html", {"request": request, "table_data": table_data})
+    # return templates.TemplateResponse("admin.html", {"request": request, "table_data": table_data})
 
 # Route to add a new row
 # @app.post("/add", response_class=HTMLResponse)
