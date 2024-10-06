@@ -18,13 +18,13 @@ async def whatsapp_reply(request: Request):
     form_data = await request.form()
     form_dict = dict(form_data)
 
-    customer_details = check_eligibility(form_dict.get('From'))
+    _, phone_number = form_dict.get('From').split('+')
+    customer_details = check_eligibility(phone_number)
     if not customer_details:
         return None
-    form_data["customer_details"] = customer_details
 
     try:
-        response = extract_whatsapp_data(form_dict)
+        response = extract_whatsapp_data(form_dict, customer_details)
     except:
         response = None
 

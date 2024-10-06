@@ -9,11 +9,10 @@ from transformers.order_creation_transformer import extract_whatsapp_data_for_or
 from utilities.prompts import action_identification, action_route, parameters_prompting, reconsider_order_creation
 
 
-def extract_whatsapp_data(data: dict):
+def extract_whatsapp_data(data: dict, customer_details: dict):
     profile_name = data.get('ProfileName')
     body = data.get('Body')
     account_sid = data.get('AccountSid')
-    customer_details = data.get("customer_details")
 
     # sms_message_sid = data.get('SmsMessageSid')
     # message_type = data.get('MessageType')
