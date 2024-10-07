@@ -26,6 +26,10 @@ order_manager = PostgresManager()
 # Route to display the table
 @router.get("/", response_class=HTMLResponse)
 async def get_table(request: Request, limit: int = 100, db: AsyncSession = Depends(admin_manager.get_db_session)):
+    user = request.session.get("user")
+    if not user:
+        return templates.TemplateResponse("login.html", {"request": request})
+
     table_data = order_manager.get_order_table_data()
     customers = await admin_manager.fetch_all_customers(session=db, limit=limit)
     functions = await admin_manager.fetch_distinct_functions_and_names(session=db, limit=limit)

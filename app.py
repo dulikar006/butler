@@ -1,12 +1,12 @@
 from logging import getLogger
 
-from fastapi import Depends, FastAPI, Form
+from fastapi import Depends, FastAPI, Form, HTTPException
 from fastapi.staticfiles import StaticFiles
+from fastapi_login import LoginManager
+from starlette.middleware.sessions import SessionMiddleware
 from starlette.templating import Jinja2Templates
 
 import auth as auth
-from database.postgres_manager import PostgresManager
-from database.redis_cache_manager import RedisCacheManager
 from routers import router_1, router_admin
 
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -21,27 +21,32 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
-# Route to display the table
+
+app.add_middleware(SessionMiddleware, secret_key="your-secret-key")
+
+templates = Jinja2Templates(directory="templates")
+
+# Hardcoded credentials for simplicity
+USERNAME = "admin"
+PASSWORD = "password"
+
+@app.get("/butler", response_class=HTMLResponse)
+async def read_login(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@app.post("/login")
+async def login(request: Request, username: str = Form(...), password: str = Form(...)):
+    if username == USERNAME and password == PASSWORD:
+        request.session["user"] = username
+        return RedirectResponse(url="/admin", status_code=302)
+    return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
+
+
+# Route to display the company profile
 @app.get("/", response_class=HTMLResponse)
 async def get_table(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
-    # redis_manager = RedisCacheManager()
-    # redis_manager.connect()
-    # table_data = redis_manager.get_table_data()
-    # return templates.TemplateResponse("admin.html", {"request": request, "table_data": table_data})
 
-# Route to add a new row
-# @app.post("/add", response_class=HTMLResponse)
-# async def add_row(name: str = Form(...), description: str = Form(...), criteria: str = Form(...)):
-#     om = PostgresManager()
-#     om.store_order_table_row(name, description, criteria)
-#     return RedirectResponse(url="/", status_code=303)
-#
-# @app.post("/delete-all", response_class=HTMLResponse)
-# async def delete_all_rows():
-#     om = PostgresManager()
-#     om.delete_all_rows()
-#     return RedirectResponse(url="/", status_code=303)
 
 @app.get("/test-auth/")
 async def test(authorized: bool = Depends(auth.validate)):

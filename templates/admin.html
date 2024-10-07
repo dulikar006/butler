@@ -1,185 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hotel Management</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/static/style.css" />
     <style>
-        body { font-family: 'Roboto', sans-serif; background-color: #f0f2f5; }
-        .container { max-width: 900px; margin: 0 auto; padding: 20px; background-color: #fff; }
-        .tabs { display: flex; margin-bottom: 20px; }
-        .tab { padding: 10px 20px; cursor: pointer; border: 1px solid #ccc; }
-        .tab.active { background-color: #3498DB; color: white; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        /* General body styles */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 20px;
-}
+        :root {
+            --hm-primary: #1b84ff;
+            --hm-danger: #f8285a;
+            --hm-gray-100: #f9f9f9;
+            --hm-gray-200: #f1f1f4;
+            --hm-gray-300: #dbdfe9;
+            --hm-gray-400: #c4cada;
+            --hm-gray-500: #99a1b7;
+            --hm-gray-600: #78829d;
+            --hm-gray-700: #4b5675;
+            --hm-gray-800: #252f4a;
+            --hm-gray-900: #071437;
+            --font-family: "Inter", sans-serif;
+            --color-grey: #dbdfe9,
+                --color-white: #fff;
+            --hm-card-border: 1px solid var(--hm-gray-200);
+            --hm-table-border: 1px solid var(--hm-gray-200);
 
-/* Table styling */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-table, th, td {
-    border: 1px solid #ddd;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-}
-
-th {
-    background-color: #4CAF50;
-    color: white;
-}
-
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-tr:hover {
-    background-color: #ddd;
-}
-
-/* Form styling */
-form {
-    margin-top: 20px;
-}
-
-form label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-form input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-form input[type="submit"] {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-form input[type="submit"]:hover {
-    background-color: #45a049;
-}
-
-/* Heading styling */
-h1 {
-    color: #333;
-}
-
-h2 {
-    color: #555;
-}
-
-textarea {
-    width: 100%; /* Makes the textarea take the full width of its container */
-    padding: 12px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    resize: vertical;
-}
-
-/* Styling the form */
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-label {
-    font-weight: 500;
-    margin-bottom: 8px;
-    color: #34495E;
-}
-
-input[type="text"], textarea, input[type="file"] {
-    width: 100%;
-    padding: 12px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-textarea {
-    resize: vertical;
-}
-
-input[type="submit"] {
-    background-color: #3498DB;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-size: 18px;
-    cursor: pointer;
-    margin-top: 20px;
-    border-radius: 5px;
-}
-
-input[type="submit"]:hover {
-    background-color: #2980B9;
-}
-
-   .form-row {
-            margin-bottom: 10px;
-        }
-        .form-row input, .form-row select {
-            margin-right: 10px;
         }
 
-        .form-row {
+        body {
+            font-family: var(--font-family);
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: var(--hm-gray-700)
+        }
+
+        input {
+            font-weight: 500;
+            font-size: .8125rem;
+            line-height: 1;
+            background-color: var(--color-grey);
+            border-radius: .375rem;
+            height: 2.5rem;
+            padding-left: .75rem;
+            padding-right: .75rem;
+            border: 1px solid #dbdfe9
+        }
+
+        input[type="file"] {
+            align-content: center
+        }
+
+        form {
             display: flex;
-            align-items: center; /* Aligns items vertically centered */
-            margin-bottom: 10px;
-        }
-        .form-row input, .form-row select, .form-row button {
-            margin-right: 10px;
+            flex-direction: column;
         }
 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table thead th {
+            font-weight: 300;
+            color: var(--hm-gray-800)
+        }
+
+        table thead tr {
+            background-color: var(--hm-gray-100);
+            font-size: .8125rem;
+            font-weight: 200
+        }
+
+        table tbody tr td,
+        table thead tr th {
+            padding: .75rem 1rem;
+            border-bottom: var(--hm-table-border);
+        }
+
+        table tbody tr td {
+            font-size: .900rem
+        }
+
+        textarea {
+            width: 100%;
+            /* Makes the textarea take the full width of its container */
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            resize: vertical;
+        }
+
+        select {
+            line-height: 1;
+            background-color: var(--hm-light-active);
+            border-radius: .375rem;
+            border: 1px solid var(--hm-gray-300);
+            color: var(--hm-gray-700);
+            height: 2.7rem;
+            padding: 0 0.75rem
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, .03);
+            border-radius: .75rem;
+            border: 1px solid #f1f1f4;
+        }
+
+        .card-header {
+            display: flex;
+            min-height: 56px;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: var(--hm-card-border);
+            padding: .75rem 1.875rem;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            line-height: 1.5rem;
+            font-weight: 600;
+            color: var(--hm-gray-900);
+        }
+
+        .card-body {
+            padding: 1.25rem 1.875rem;
+            flex-grow: 1
+        }
+
+        .table-body {
+            padding: 1.25rem 0 !important;
+        }
+
+        .card-body form {
+            gap: 1.25rem;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            line-height: 1;
+            border-radius: .375rem;
+            height: 2.5rem;
+            padding-left: 2rem;
+            padding-right: 2rem;
+            gap: .375rem;
+            border: 1px solid transparent;
+            font-weight: 600;
+            font-size: .8125rem;
+            outline: none;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            color: #fff;
+            background-color: var(--hm-primary);
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: var(--hm-danger);
+        }
+
+        .width-full {
+            width: 100%
+        }
+
+        .width-50 {
+            width: 50%
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .form-group {
+            /* margin-bottom: 15px; */
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem
+        }
+
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border-width: 0;
+            border-bottom: 1px solid var(--hm-gray-200);
+            justify-content: space-around;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: .875rem;
+            line-height: 1.25rem;
+        }
+
+        .tab.active {
+            border-bottom: 1px solid var(--hm-primary);
+            color: var(--hm-primary);
+        }
+
+        .tab-content {
+            padding-top: 20px;
+            display: none;
+        }
+
+        .no-padding-y {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        .horizontal-form-row {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 2rem;
+            border: 1px solid var(--hm-gray-300);
+            border-radius: 8px;
+            padding: 2rem 2rem
+        }
+
+        .horizontal-form-row input,
+        .horizontal-form-row select {
+            width: 100%;
+        }
     </style>
     <script>
         function showTab(tabIndex) {
-            const tabs = document.querySelectorAll('.tab');
-            const contents = document.querySelectorAll('.tab-content');
+            const tabs = document.querySelectorAll(".tab");
+            const contents = document.querySelectorAll(".tab-content");
             tabs.forEach((tab, index) => {
-                tab.classList.toggle('active', index === tabIndex);
-                contents[index].classList.toggle('active', index === tabIndex);
+                tab.classList.toggle("active", index === tabIndex);
+                contents[index].classList.toggle("active", index === tabIndex);
             });
         }
 
-         function addRow() {
+        function addRow() {
             // Create a new row
-            const formRows = document.getElementById('formRows');
-            const newRow = document.createElement('div');
-            newRow.classList.add('form-row');
+            const formRows = document.getElementById("formRows");
+            const newRow = document.createElement("div");
+            newRow.classList.add("form-row");
 
             newRow.innerHTML = `
                 <input type="text" name="required_details" placeholder="Enter Required Detail Field" required>
@@ -198,221 +297,259 @@ input[type="submit"]:hover {
             // Remove the row
             button.parentElement.remove();
         }
-
     </script>
 </head>
+
 <body>
-    <div class="container">
+    <div class="container card">
         <div class="tabs">
             <div class="tab active" onclick="showTab(0)">Enroll Customer</div>
             <div class="tab" onclick="showTab(1)">Upload Information</div>
             <div class="tab" onclick="showTab(2)">Brochures Files</div>
-              <div class="tab" onclick="showTab(3)">Add Order Actions</div>
-             <div class="tab" onclick="showTab(4)">Existing Orders</div>
-             <div class="tab" onclick="showTab(5)">Notifications</div>
+            <div class="tab" onclick="showTab(3)">Add Order Actions</div>
+            <div class="tab" onclick="showTab(4)">Existing Orders</div>
+            <div class="tab" onclick="showTab(5)">Notifications</div>
         </div>
 
         <!-- Tab 1: Enroll Hotel Customers -->
         <div class="tab-content active">
-            <h2>Enroll Hotel Customer</h2>
-            <form action="add-customer" method="post">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
-                 <label for="phone_number">Phone Number:</label>
-                <input type="text" id="phone_number" name="phone_number" required>
-                <label for="room_number">Room Number:</label>
-                <input type="number" id="room_number" name="room_number" required>
-
-                 <label for="gender">Gender:</label>
-                <input type="text" id="gender" name="gender">
-                 <label for="age">Age:</label>
-                <input type="text" id="age" name="age">
-                 <label for="family_members">Family Members:</label>
-                <input type="text" id="family_members" name="family_members">
-                 <label for="add_details">Additional Details:</label>
-                <input type="text" id="add_details" name="add_details">
-
-                <br><br>
-
-                <div class="form-group">
-                    <label for="checkout_date">Checkout Date:</label>
-                    <input type="date" id="checkout_date" name="checkout_date" required>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Enroll Hotel Customer</h3>
                 </div>
+                <div class="card-body">
+                    <form action="add-customer" method="post">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required />
+                        <label for="phone_number">Phone Number:</label>
+                        <input type="text" id="phone_number" name="phone_number" required />
+                        <label for="room_number">Room Number:</label>
+                        <input type="number" id="room_number" name="room_number" required />
 
-                <input type="submit" value="Add Customer">
-            </form>
-         <h2>Registered Customers</h2>
-            <table>
-                <tr>
-                    <th>Name</th>
-                    <th>Room Number</th>
-                    <th>Checkout Date</th>
-                </tr>
-                {% for customer in customers %}
-                <tr>
-                    <td>{{ customer.name }}</td>
-                    <td>{{ customer.room_number }}</td>
-                    <td>{{ customer.checkout_date }}</td>
-                </tr>
-                {% endfor %}
-            </table>
+                        <label for="gender">Gender:</label>
+                        <input type="text" id="gender" name="gender">
+                         <label for="age">Age:</label>
+                        <input type="text" id="age" name="age">
+                         <label for="family_members">Family Members:</label>
+                        <input type="text" id="family_members" name="family_members">
+                         <label for="add_details">Additional Details:</label>
+                        <input type="text" id="add_details" name="add_details">
+
+                        <div class="form-group width-50">
+                            <label for="checkout_date">Checkout Date:</label>
+                            <input type="date" id="checkout_date" name="checkout_date" class="width-full" required />
+                        </div>
+                        <div class="card-actions">
+                            <input class="btn btn-primary" type="submit" value="Add Customer" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header no-padding-y">
+                    <h3 class="card-title">Registered Customers</h3>
+                </div>
+                <div class="card-body table-body no-padding-y">
+                    <table>
+                        <thead>
+                            <th class="text-left">Name</th>
+                            <th class="text-right">Room Number</th>
+                            <th class="text-right">Checkout Date</th>
+                        </thead>
+                        <tbody>
+                            {% for customer in customers %}
+                            <tr>
+                                <td class="text-left">{{ customer.name }}</td>
+                                <td class="text-right">{{ customer.room_number }}</td>
+                                <td class="text-right">{{ customer.checkout_date }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <!-- Tab 2: Upload Files -->
-       <div class="tab-content">
-            <h2>Upload Files</h2>
-            <form action="upload-file" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="criteria">Information Criteria:</label>
-                    <input type="text" id="criteria" name="criteria" required>
+        <div class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Upload Files</h3>
                 </div>
+                <div class="card-body">
+                    <form action="upload-file" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="criteria">Information Criteria:</label>
+                            <input type="text" id="criteria" name="criteria" required />
+                        </div>
 
-                <div class="form-group">
-                    <label for="description">File Description:</label>
-                    <input type="text" id="description" name="description" required>
+                        <div class="form-group">
+                            <label for="description">File Description:</label>
+                            <input type="text" id="description" name="description" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="information">Information:</label>
+                            <textarea id="information" name="information" rows="20"
+                                style="width: 809px; height: 165px"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="file">Upload Information File:</label>
+                            <input type="file" id="file" name="file" />
+                        </div>
+                        <div class="card-actions">
+                            <input class="btn btn-primary" type="submit" value="Upload File" />
+                        </div>
+                    </form>
                 </div>
-
-                <div class="form-group">
-                    <label for="information">Information:</label>
-                    <textarea id="information" name="information" rows="20" style="width: 906px; height: 165px;"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="file">Upload Information File:</label>
-                    <input type="file" id="file" name="file">
-                </div>
-
-                <input type="submit" value="Upload File">
-            </form>
-       </div>
+            </div>
+        </div>
 
         <!-- Tab 3: Upload Brochures -->
-       <div class="tab-content">
-            <h2>Upload Brochures</h2>
-            <form action="upload-brochures-file" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="criteria">Brochures Criteria:</label>
-                    <input type="text" id="b_criteria" name="criteria" required>
+        <div class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Upload Brochures</h2>
                 </div>
+                <div class="card-body">
+                    <form action="upload-brochures-file" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="criteria">Brochures Criteria:</label>
+                            <input type="text" id="b_criteria" name="criteria" required />
+                        </div>
 
-                <div class="form-group">
-                    <label for="description">Brochures Description:</label>
-                    <input type="text" id="b_description" name="description" required>
+                        <div class="form-group">
+                            <label for="description">Brochures Description:</label>
+                            <input type="text" id="b_description" name="description" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="file">Upload Brochures File:</label>
+                            <input type="file" id="b_file" name="file" required />
+                        </div>
+                        <div class="card-actions">
+                            <input class="btn btn-primary" type="submit" value="Upload File" />
+                        </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="file">Upload Brochures File:</label>
-                    <input type="file" id="b_file" name="file" required>
-                </div>
-
-                <input type="submit" value="Upload File">
-            </form>
-       </div>
+                </form>
+            </div>
+        </div>
 
         <!-- Tab 4: Add Actions -->
         <div class="tab-content">
-            <h2>Add New Action Items</h2>
-            <form action="add-action" method="post">
-
-                <label for="name">Main Function:</label>
-                <input type="text" id="f_name" name="f_name" required>
-
-                <label for="name">Action Name:</label>
-                <input type="text" id="a_name" name="a_name" required>
-
-                <label for="a_description">Action Description:</label>
-                <input type="text" id="a_description" name="a_description" required>
-
-                <br><br>
-                <label for="name">Required Fields For Action:</label>
-                <br>
-
-                <button type="button" onclick="addRow()">Add Row</button>
-                <div id="formRows">
-                    <!-- Initial Row -->
-                    <div class="form-row">
-                        <input type="text" name="required_details" placeholder="Enter Required Detail Field" required>
-                        <input type="text" name="example_values" placeholder="Example Value" required>
-                        <select name="mandatory_optional" required>
-                            <option value="mandatory">mandatory</option>
-                            <option value="optional">optional</option>
-                        </select>
-                        <button type="button" onclick="removeRow(this)">Remove</button>
-                    </div>
-                    <br><br>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Add New Action Items</h3>
                 </div>
+                <div class="card-body">
+                    <form action="add-action" method="post">
+                        <label for="name">Main Function:</label>
+                        <input type="text" id="f_name" name="f_name" required />
 
-                <input type="submit" value="Add Action">
-            </form>
+                        <label for="name">Action Name:</label>
+                        <input type="text" id="a_name" name="a_name" required />
+
+                        <label for="a_description">Action Description:</label>
+                        <input type="text" id="a_description" name="a_description" required />
+
+
+                        <div class="card-actions" style="justify-content: space-between; align-items: center;">
+                            <label for="name">Required Fields For Action:</label>
+                            <button class="btn btn-primary" type="button" onclick="addRow()">Add Row</button>
+                        </div>
+                        <div id="formRows">
+                            <!-- Initial Row -->
+                            <div class="form-row horizontal-form-row">
+                                <input type="text" name="required_details" placeholder="Enter Required Detail Field"
+                                    required />
+                                <input type="text" name="example_values" placeholder="Example Value" required />
+                                <select name="mandatory_optional" required>
+                                    <option value="mandatory">mandatory</option>
+                                    <option value="optional">optional</option>
+                                </select>
+                                <button class="btn btn-danger" type="button" onclick="removeRow(this)">Remove</button>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <input class="btn btn-primary" type="submit" value="Add Action" />
+                        </div>
+
+                    </form>
+                </div>
+            </div>
         </div>
-
-
-
 
         <!-- Tab 5: Existing Orders -->
         <div class="tab-content">
-            <h2>Current Orders</h2>
-              <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Criteria</th>
-                        <th>Function</th> <!-- Added Function column -->
-                        <th>Customer Details</th>
-                        <th>Status</th>     <!-- Added Status column -->
-                        <th>Created At</th> <!-- Added Created At column -->
-                        <th>Updated At</th> <!-- Added Updated At column -->
-                    </tr>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Current Orders</h3>
+                </div>
+                <div class="card-body table-body no-padding-y">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="text-left">ID</th>
+                                <th class="text-right">Name</th>
+                                <th class="text-right">Description</th>
+                                <th class="text-right">Criteria</th>
+                                <th class="text-right">Function</th> <!-- Added Function column -->
+                                <th class="text-right">Customer Details</th>
+                                <th class="text-right">Status</th>     <!-- Added Status column -->
+<!--                                <th class="text-right">Created At</th> &lt;!&ndash; Added Created At column &ndash;&gt;-->
+<!--                                <th class="text-right">Updated At</th> &lt;!&ndash; Added Updated At&ndash;&gt;-->
+                            </tr>
                         </thead>
-                <tbody>
-                    {% if table_data %}
                         {% for row in table_data %}
-                        <tr>
-                            <td>{{ row.id }}</td>
-                            <td>{{ row.name }}</td>
-                            <td>{{ row.description }}</td> <!-- Updated from row.details to row.description -->
-                            <td>{{ row.criteria }}</td>     <!-- Added Criteria column -->
-                            <td>{{ row.function }}</td>       <!-- Added Function column -->
-                            <td>{{ row.customer_details }}</td>
-                            <td>{{ row.status }}</td>         <!-- Added Status column -->
-                            <td>{{ row.created_at }}</td>     <!-- Added Created At column -->
-                            <td>{{ row.updated_at }}</td>     <!-- Added Updated At column -->
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td class="text-left">{{ row.id }}</td>
+                                <td class="text-right">{{ row.name }}</td>
+                                <td class="text-right">{{ row.description }}</td>
+                                <td class="text-right">{{ row.criteria }}</td>
+                                <td class="text-left">{{ row.function }}</td>
+                                <td class="text-right">{{ row.customer_details }}</td>
+                                <td class="text-right">{{ row.status }}</td>
+<!--                                <td class="text-right">{{ row.created_at }}</td>-->
+<!--                                <td class="text-right">{{ row.updated_at }}</td>-->
+                            </tr>
+                        </tbody>
                         {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="8">No current orders available.</td> <!-- Adjusted colspan to match the number of columns -->
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
+                    </table>
+                </div>
+            </div>
         </div>
 
-           <!-- Tab 6: Push Notifications -->
-       <div class="tab-content">
-            <h2>Generate Notifications</h2>
-            <form action="push-notifications" method="post">
-                <div class="form-group">
-                    <label for="p_number">Phone Number:</label>
-                    <input type="text" id="p_number" name="p_number" required>
+        <!-- Tab 6: Push Notifications -->
+        <div class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Generate Notifications</h3>
                 </div>
+                <div class="card-body">
+                    <form action="push-notifications" method="post">
+                        <div class="form-group">
+                            <label for="p_number">Phone Number:</label>
+                            <input type="text" id="p_number" name="p_number" required />
+                        </div>
 
-                <div class="form-group">
-                    <label for="n_message">Message:</label>
-                    <input type="text" id="n_message" name="n_message" required>
+                        <div class="form-group">
+                            <label for="n_message">Message:</label>
+                            <input type="text" id="n_message" name="n_message" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="s_ref">Sender Reference:</label>
+                            <input type="text" id="s_ref" name="s_ref" required />
+                        </div>
+                        <div class="card-actions">
+                            <input class="btn btn-primary" type="submit" value="Send Notification" />
+                        </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="s_ref">Sender Reference:</label>
-                    <input type="text" id="s_ref" name="s_ref" required>
-                </div>
-
-                <input type="submit" value="Send Notification">
+            </div>
             </form>
-       </div>
-
+        </div>
     </div>
 </body>
 </html>
