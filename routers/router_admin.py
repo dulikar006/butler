@@ -35,6 +35,10 @@ async def get_table(request: Request, limit: int = 100, db: AsyncSession = Depen
     customers = await admin_manager.fetch_all_customers(session=db, limit=limit)
     functions = await admin_manager.fetch_distinct_functions_and_names(session=db, limit=limit)
 
+    for row in table_data:
+        if isinstance(row['customer_details'], str):
+            row['customer_details'] = json.loads(row['customer_details'])
+
     return templates.TemplateResponse("admin.html", {
         "request": request,
         "table_data": table_data,

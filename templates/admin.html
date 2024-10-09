@@ -414,17 +414,18 @@
                                 <tr>
                                     <td class="text-left">{{ row.id }}</td>
                                     <td class="text-right">{{ row.name }}</td>
-                                    <td class="text-right">
-                                        {% if row.customer_details is mapping %}
-                                            {% for key, value in row.customer_details.items() %}
-                                                <span style="background-color: #f0ad4e; color: white; border-radius: 5px; padding: 2px 5px; margin: 0 2px;">
-                                                    #{{ key }}: {{ value }}
-                                                </span>
-                                            {% endfor %}
-                                        {% else %}
-                                            <span>No customer details available</span>
-                                        {% endif %}
-                                    </td>
+                                     <td class="text-right">{{ row.description }}</td>
+<!--                                    <td class="text-right">-->
+<!--                                        {% if row.description is mapping %}-->
+<!--                                            {% for key, value in row.description.items() %}-->
+<!--                                                <span style="background-color: #f0ad4e; color: white; border-radius: 5px; padding: 2px 5px; margin: 0 2px;">-->
+<!--                                                    #{{ key }}: {{ value }}-->
+<!--                                                </span>-->
+<!--                                            {% endfor %}-->
+<!--                                        {% else %}-->
+<!--                                            <span>No order description available</span>-->
+<!--                                        {% endif %}-->
+<!--                                    </td>-->
                                     <td class="text-right">{{ row.criteria }}</td>
                                     <td class="text-left">{{ row.function }}</td>
                                     <td class="text-right">
