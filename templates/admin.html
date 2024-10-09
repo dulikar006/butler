@@ -167,6 +167,11 @@
                 max-width: 200px;
             }
         }
+
+        .scrollable-cell {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
     </style>
     <script>
         function showTab(tabIndex) {
@@ -391,36 +396,54 @@
                     <h3 class="card-title">Current Orders</h3>
                 </div>
                 <div class="card-body table-body no-padding-y">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="text-left">ID</th>
-                                <th class="text-right">Name</th>
-                                <th class="text-right">Description</th>
-                                <th class="text-right">Criteria</th>
-                                <th class="text-right">Function</th> <!-- Added Function column -->
-                                <th class="text-right">Customer Details</th>
-                                <th class="text-right">Status</th>     <!-- Added Status column -->
-<!--                                <th class="text-right">Created At</th> &lt;!&ndash; Added Created At column &ndash;&gt;-->
-<!--                                <th class="text-right">Updated At</th> &lt;!&ndash; Added Updated At&ndash;&gt;-->
-                            </tr>
-                        </thead>
-                        {% for row in table_data %}
-                        <tbody>
-                            <tr>
-                                <td class="text-left">{{ row.id }}</td>
-                                <td class="text-right">{{ row.name }}</td>
-                                <td class="text-right">{{ row.description }}</td>
-                                <td class="text-right">{{ row.criteria }}</td>
-                                <td class="text-left">{{ row.function }}</td>
-                                <td class="text-right">{{ row.customer_details }}</td>
-                                <td class="text-right">{{ row.status }}</td>
-<!--                                <td class="text-right">{{ row.created_at }}</td>-->
-<!--                                <td class="text-right">{{ row.updated_at }}</td>-->
-                            </tr>
-                        </tbody>
-                        {% endfor %}
-                    </table>
+                    <div style="overflow-x: auto; white-space: nowrap;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="text-left">ID</th>
+                                    <th class="text-right">Name</th>
+                                    <th class="text-right">Description</th>
+                                    <th class="text-right">Criteria</th>
+                                    <th class="text-right">Function</th>
+                                    <th class="text-right">Customer Details</th>
+                                    <th class="text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in table_data %}
+                                <tr>
+                                    <td class="text-left">{{ row.id }}</td>
+                                    <td class="text-right">{{ row.name }}</td>
+                                    <td class="text-right">
+                                        {% if row.customer_details is mapping %}
+                                            {% for key, value in row.customer_details.items() %}
+                                                <span style="background-color: #f0ad4e; color: white; border-radius: 5px; padding: 2px 5px; margin: 0 2px;">
+                                                    #{{ key }}: {{ value }}
+                                                </span>
+                                            {% endfor %}
+                                        {% else %}
+                                            <span>No customer details available</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-right">{{ row.criteria }}</td>
+                                    <td class="text-left">{{ row.function }}</td>
+                                    <td class="text-right">
+                                        {% if row.customer_details is mapping %}
+                                            {% for key, value in row.customer_details.items() %}
+                                                <span style="background-color: #f0ad4e; color: white; border-radius: 5px; padding: 2px 5px; margin: 0 2px;">
+                                                    #{{ key }}: {{ value }}
+                                                </span>
+                                            {% endfor %}
+                                        {% else %}
+                                            <span>No customer details available</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-right">{{ row.status }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

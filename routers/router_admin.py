@@ -1,4 +1,5 @@
 import atexit
+import json
 
 from fastapi import APIRouter, Depends, Form, File, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -33,6 +34,24 @@ async def get_table(request: Request, limit: int = 100, db: AsyncSession = Depen
     table_data = order_manager.get_order_table_data()
     customers = await admin_manager.fetch_all_customers(session=db, limit=limit)
     functions = await admin_manager.fetch_distinct_functions_and_names(session=db, limit=limit)
+
+    return templates.TemplateResponse("admin.html", {
+        "request": request,
+        "table_data": table_data,
+        "customers": customers,
+        "functions": functions
+    })
+
+
+@router.get("/test", response_class=HTMLResponse)
+async def get_table(request: Request, limit: int = 100, db: AsyncSession = Depends(admin_manager.get_db_session)):
+    table_data = order_manager.get_order_table_data()
+    customers = await admin_manager.fetch_all_customers(session=db, limit=limit)
+    functions = await admin_manager.fetch_distinct_functions_and_names(session=db, limit=limit)
+
+    for row in table_data:
+        if isinstance(row['customer_details'], str):
+            row['customer_details'] = json.loads(row['customer_details'])
 
     return templates.TemplateResponse("admin.html", {
         "request": request,
