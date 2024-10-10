@@ -12,9 +12,9 @@ class Customer(Base):
     phone_number = Column(String, index=True)
     room_number = Column(Integer)
     checkout_date = Column(String)
-    gender = Column(String)
-    age = Column(String)
-    family_members = Column(String)
+    # gender = Column(String)
+    # age = Column(String)
+    # family_members = Column(String)
     add_details = Column(String)
 
 

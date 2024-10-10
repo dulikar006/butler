@@ -28,7 +28,7 @@ class TwillioClient:
     def send_template_message(self, name, hotel_name, sender, phone_number):
         try:
             message = self.client.messages.create(
-                content_sid="HX142ff9fa1bd64d30d1b41911c0981e41",
+                content_sid="HX3f34b459bef9b83cf3ee6cd66b4b0009",
                 to=f"whatsapp:+{phone_number}",
                 from_='whatsapp:+94768813566',
                 content_variables=json.dumps({"1": name, "2": hotel_name, "3": sender}),

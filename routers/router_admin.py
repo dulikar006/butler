@@ -79,9 +79,9 @@ async def create_customer(
         phone_number: str = Form(...),
         room_number: int = Form(...),
 
-        gender: str = Form(...),
-        age: str = Form(...),
-        family_members: str = Form(...),
+        # gender: str = Form(...),
+        # age: str = Form(...),
+        # family_members: str = Form(...),
         add_details: str = Form(...),
 
         checkout_date: str = Form(...),
@@ -89,7 +89,7 @@ async def create_customer(
 ):
     new_customer = await admin_manager.add_customer(session=db, name=name, phone_number=phone_number,
                                                     room_number=room_number, checkout_date=checkout_date,
-                                                    gender=gender, age=age, family_members=family_members,
+                                                    # gender=gender, age=age, family_members=family_members,
                                                     add_details=add_details
                                                     )
 
