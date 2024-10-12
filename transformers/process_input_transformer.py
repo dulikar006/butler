@@ -1,3 +1,5 @@
+import json
+
 from clients.openai_client import call_openai
 from clients.postgres_client import PostgresClient
 from clients.twillio_client import TwillioClient
@@ -9,11 +11,12 @@ from transformers.order_creation_transformer import extract_whatsapp_data_for_or
 from utilities.prompts import action_identification, action_route, parameters_prompting, reconsider_order_creation
 
 
-def extract_whatsapp_data(data: dict, customer_details: dict):
+def extract_whatsapp_data(data: dict, customer_details: dict, current_date_time: str):
     profile_name = data.get('ProfileName')
     body = data.get('Body')
-    account_sid = data.get('AccountSid')
+    _, phone_number = data.get('From').split('+')
 
+    # account_sid = data.get('AccountSid')
     # sms_message_sid = data.get('SmsMessageSid')
     # message_type = data.get('MessageType')
     # sms_sid = data.get('SmsSid')
@@ -33,14 +36,13 @@ def extract_whatsapp_data(data: dict, customer_details: dict):
         media_url = data.get('MediaUrl0')
         attachment_description = process_attachment_message(media_content_type, num_media, media_url, body)
 
-    all_chat_history = get_chat_history(account_sid)# get chat history
-    chat_history = all_chat_history[-5:]
-    chat_history.append(customer_details)
+    all_chat_history = get_chat_history(phone_number)# get chat history
+    chat_history = add_customer_details_to_chat(all_chat_history[-5:], customer_details)
 
     # check if the message is part of order creation process
     redis_manager = RedisCacheManager()
     redis_manager.connect()
-    category = redis_manager.is_order_creation(account_sid)
+    category = redis_manager.is_order_creation(phone_number)
 
     if isinstance(category, list) and len(category) > 0:
         category = category[0]
@@ -58,30 +60,31 @@ def extract_whatsapp_data(data: dict, customer_details: dict):
             # continue with the order
             proceed_order, response = cancel_order_creation(order_category, body, chat_history)
             if proceed_order == 0 or "0" in proceed_order:
-                redis_manager.delete_order_creation(account_sid)
+                redis_manager.delete_order_creation(phone_number)
                 response += "\n - Shalini, Careline Agent."
-                update_history(account_sid, body, response)
+                update_history(phone_number, body, response)
                 return response
             elif proceed_order == 1 or "1" in proceed_order:
                 response += "\n - Shalini, Careline Agent."
-                update_history(account_sid, body, response)
+                update_history(phone_number, body, response)
                 return response
 
             # else go to order creation
-            response = extract_whatsapp_data_for_order_creation(profile_name, account_sid,
-                                                                order_category, order_parameters, body, chat_history, customer_details)
+            response = extract_whatsapp_data_for_order_creation(profile_name, phone_number,
+                                                                order_category, order_parameters,
+                                                                body, chat_history, customer_details)
             response += "\n - Shalini, Careline Agent."
-            update_history(account_sid, body, response)
+            update_history(phone_number, body, response)
             return response
 
     action, criteria = identify_action(chat_history, body)
 
     if action == 'True':
 
-        is_category, response = route_action(account_sid, chat_history, body, criteria)
+        is_category, response = route_action(phone_number, chat_history, body, criteria)
 
         if is_category:  # if identified action, respond to prompt required information
-            update_history(account_sid, body, response)
+            update_history(phone_number, body, response)
             if isinstance(response, dict):
                 response = f"Please provide these details to proceed with the order - {str(response)}"
             response += "\n - Shalini, Careline Agent."
@@ -91,13 +94,13 @@ def extract_whatsapp_data(data: dict, customer_details: dict):
         tc = TwillioClient()
         tc.connect()
         tc.send_message(
-            f"Hi Mr.Malaka, Our guest at room number 38 is requesting an action on {criteria}. Can you please do the needful. \n - Shalini, Careline Agent.",
+            f"Hi Mr.Malaka, Our guest is requesting an action on {criteria}. Can you please do the needful. \n Guest Details: {customer_details} \n \n - Shalini, Careline Agent.",
             '94772608766')
 
     else:
-        response = generate_response(body, chat_history=chat_history)
+        response = generate_response(body, current_date_time, chat_history=chat_history)
 
-    update_history(account_sid, body, response)
+    update_history(phone_number, body, response)
 
     response += "\n - Shalini, Careline Agent."
 
@@ -156,3 +159,14 @@ def cancel_order_creation(category, body, chat_history):
     action = result_dict.get('action')
     response = result_dict.get('response')
     return action, response
+
+
+def add_customer_details_to_chat(chat_hsitory, customer_details):
+    formatted_chat = json.dumps(chat_hsitory, indent=4)
+
+    return f"""customer details: {str(customer_details)}
+    
+    chat_history: {formatted_chat}
+
+            """
+

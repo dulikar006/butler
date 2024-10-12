@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Form
 from fastapi.responses import Response
 from twilio.twiml.messaging_response import MessagingResponse
 
-from helpers.load_response import generate_response
+from helpers.datetime_helper import get_current_time
 from transformers.check_customer_status import check_eligibility
 from transformers.process_input_transformer import extract_whatsapp_data
 
@@ -20,11 +20,12 @@ async def whatsapp_reply(request: Request):
 
     _, phone_number = form_dict.get('From').split('+')
     customer_details = check_eligibility(phone_number)
+    current_date_time = get_current_time()
     if not customer_details:
         return None
 
     try:
-        response = extract_whatsapp_data(form_dict, customer_details)
+        response = extract_whatsapp_data(form_dict, customer_details, current_date_time)
     except:
         response = None
 
@@ -49,16 +50,14 @@ def whatsapp_reply(Body: str = Form(...)):
     print('WhatsApp message hit and started')
     incoming_message = Body.lower()
 
-    form_data = {'ProfileName': 'Isuri', 'Body': incoming_message, 'AccountSid': 'test2309239802091238'}
-
-    customer_details = check_eligibility('6582641468')
+    form_data = {'ProfileName': 'Isuri', 'Body': incoming_message, 'AccountSid': 'test2309239802091238', 'From': '+658879926'}
+    current_date_time = get_current_time()
+    customer_details = check_eligibility('6588739926')
     if not customer_details:
         return None
     form_data["customer_details"] = customer_details
 
-
-
-    response = extract_whatsapp_data(form_data)
+    response = extract_whatsapp_data(form_data, customer_details, current_date_time)
     # response = execute_agent(data)
     if response:
         # Create a Twilio response object

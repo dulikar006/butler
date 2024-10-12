@@ -10,7 +10,7 @@ def load_from_vector(query):
     search_results_text = "\n".join([doc.get('content') for doc in search_results])
     return search_results_text
 
-def generate_response(query, chat_history=""):
+def generate_response(query, current_date_time, chat_history=""):
     data = load_from_vector(query)
 
     prompt = f"""You are a personal assistant at Avani Hotel dedicated to the customer staying in the hotel.
@@ -21,11 +21,19 @@ def generate_response(query, chat_history=""):
     Please do not misguide or use any extra information out of the knowledge content.
     Do not mention about knowledge content. Think of it as your knowledge.
     Below content is the knowledge related to the information your customer might need.
+    
+    
     [content starts here]
     {data}
     [content ends here]
     
-    chat_history : {chat_history}
+    
+    chat_history and customer_details  : {chat_history}
+    
+    
+    {current_date_time}
+    Consider the time if its related to the question when you answering the question
+
     
     Please answer this question only based on the knowledge.
     Question: {query}

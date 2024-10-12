@@ -2,7 +2,7 @@ action_identification = '''
 You are an expert in customer service and front desk handling in Hotel industry.
 Your job is to follow below guidelines and identify the request from below chat history and question
 
-chat history: {chat_history}
+chat history and customer_details : {chat_history}
 
 
 question: {question}
@@ -28,7 +28,7 @@ reconsider_order_creation = '''
 You are an expert in customer service and front desk handling in Hotel industry.
 Your job is to follow below guidelines and identify the request from below chat history and question
 
-chat history: {chat_history}
+chat history and customer_details : {chat_history}
 
 category: {category}
 
@@ -59,7 +59,7 @@ action_route_consolidated = '''
 You are an expert in customer service and front desk handling in Hotel industry.
 Your job is to follow below guidelines and identify the request action belongs to which category from below chat history and question.
 
-chat history: {chat_history}
+chat history and customer_details : {chat_history}
 
 
 question: {question}
@@ -101,7 +101,7 @@ action_route = '''
 You are an expert in customer service and front desk handling in Hotel industry.
 Your job is to follow below guidelines and identify the request action belongs to which category from below chat history and question.
 
-chat history: {chat_history}
+chat history and customer_details : {chat_history}
 
 
 question: {question}
@@ -137,7 +137,7 @@ parameters_prompting = '''
 You are an expert in customer service and front desk handling in Hotel industry.
 Your job is to get required details from the user.
 
-chat history: {chat_history}
+chat history and customer_details : {chat_history}
 
 question: {question}
 
@@ -158,7 +158,7 @@ order_details_validation = '''
 You are an expert in customer service and front desk handling in Hotel industry.
 Your job is to follow below guidelines and identify if this user response have all the required details for order creation on given order category.
 
-chat_history: {chat_history}
+chat_history and customer_details : {chat_history}
 
 user_response: {user_response}
 
