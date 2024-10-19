@@ -7,7 +7,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.templating import Jinja2Templates
 
 import auth as auth
-from routers import router_whatsapp, router_admin
+from routers import router_whatsapp, router_admin, router_dashboard
 
 from fastapi.responses import HTMLResponse, RedirectResponse
 from starlette.requests import Request
@@ -57,8 +57,9 @@ async def test(authorized: bool = Depends(auth.validate)):
 
 
 # Import all the routers that you need
-app.include_router(router_whatsapp.router)
-app.include_router(router_admin.router)
+app.include_router(router_dashboard.router, tags=["Dashboard"])
+app.include_router(router_whatsapp.router, tags=["WhatsApp"])
+app.include_router(router_admin.router, tags=["Admin"])
 
 
 # # Main function to execute FastAPI
