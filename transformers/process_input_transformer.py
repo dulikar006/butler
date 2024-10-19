@@ -1,6 +1,6 @@
 import json
 
-from clients.openai_client import call_openai
+from clients.openai_client import call_openai, llm
 from clients.postgres_client import PostgresClient
 from clients.twillio_client import TwillioClient
 from database.redis_cache_manager import RedisCacheManager
@@ -59,15 +59,31 @@ def extract_whatsapp_data(data: dict, customer_details: dict, current_date_time:
             # check if current question is about the booking or completely different, if different, ask still want to
             # continue with the order
             proceed_order, response = cancel_order_creation(order_category, body, chat_history)
-            if proceed_order == 0 or "0" in proceed_order:
+
+            if proceed_order == 0 or "0" in proceed_order or body == 'Ignore': #if dont want to continue with the order
+                if body == 'Ignore':
+                    response = llm(f"""{response} -  convert this message to inform the customer that current ongoing order mentioned in the message been cancelled.
+                                    Make sure to highlight the current ongoing message description and that it has been cancelled.
+                                    Only return updated message.
+                                    Do not hallucinate or add extra content or guidance.
+                                     """)
+
                 redis_manager.delete_order_creation(phone_number)
                 response += "\n - Shalini, Careline Agent."
                 update_history(phone_number, body, response)
                 return response
-            elif proceed_order == 1 or "1" in proceed_order:
-                response += "\n - Shalini, Careline Agent."
+
+            elif (proceed_order == 1 or "1" in proceed_order) and body != 'Continue': #asking if still want to continue with the order
+                response = llm(f"""{response} -  convert this message to ask if want to continue with current ongoing order mentioned in the message.
+                Make sure to highlight the current ongoing message description.
+                Only return updated message.
+                 """)
                 update_history(phone_number, body, response)
-                return response
+
+                tc = TwillioClient()
+                tc.connect()
+                tc.send_confirmation_message(response, phone_number)
+                return True
 
             # else go to order creation
             response = extract_whatsapp_data_for_order_creation(profile_name, phone_number,

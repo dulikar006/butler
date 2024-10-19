@@ -32,6 +32,8 @@ async def whatsapp_reply(request: Request):
     # response = execute_agent(data)
 
     if response:
+        if isinstance(response, bool):
+            return None
         # Create a Twilio response object
         resp = MessagingResponse()
         resp.message(response)
@@ -46,11 +48,11 @@ async def whatsapp_reply(request: Request):
 
 
 @router.post("/get_message_test")
-def whatsapp_reply(Body: str = Form(...)):
+def whatsapp_test_reply(Body: str = Form(...)):
     print('WhatsApp message hit and started')
     incoming_message = Body.lower()
 
-    form_data = {'ProfileName': 'Isuri', 'Body': incoming_message, 'AccountSid': 'test2309239802091238', 'From': '+658879926'}
+    form_data = {'ProfileName': 'Isuri', 'Body': incoming_message, 'AccountSid': 'test2309239802091238', 'From': '+6588739926'}
     current_date_time = get_current_time()
     customer_details = check_eligibility('6588739926')
     if not customer_details:
