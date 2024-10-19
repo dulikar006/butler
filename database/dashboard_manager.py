@@ -65,7 +65,7 @@ class DashboardManager:
                            checkin_date: str, checkout_date: str, description: str, language: str, special_info: str,
                            is_active: bool):
         new_customer = Customers(
-            name=name, phone_number=phone_number, room_number=room_number, booked_date=booked_date,
+            name=name, hotel_id=hotel_id, phone_number=phone_number, room_number=room_number, booked_date=booked_date,
             checkin_date=checkin_date, checkout_date=checkout_date, description=description,
             language=language, special_info=special_info, is_active=is_active
         )
@@ -134,14 +134,15 @@ class DashboardManager:
 
     async def add_action(self, session: AsyncSession, hotel_id: int, function: str, name: str, description: str,
                          fields: list, is_active: bool):
-        field_list = [
-            {"detail": detail, "example": example, "mandatory_optional": mandatory}
-            for detail, example, mandatory in zip(fields["details"], fields["examples"], fields["mandatory_optional"])
-        ]
         new_action = Actions(
-            hotel_id=hotel_id, function=function, name=name, description=description, fields=field_list,
+            hotel_id=hotel_id,
+            function=function,
+            name=name,
+            description=description,
+            fields=fields,  # Directly using fields as a list of dictionaries
             is_active=is_active
         )
+
         session.add(new_action)
         await session.commit()
         await session.refresh(new_action)

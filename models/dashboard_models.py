@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, String, JSON, Boolean
+import uuid
+
+from sqlalchemy import Column, Integer, String, JSON, Boolean, UUID
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -9,17 +11,17 @@ class Hotels(Base):
     __table_args__ = {"schema": "buttler"}  # Specify your schema name here
 
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     name = Column(String, index=True)
-    Address = Column(String)
-    Description = Column(String)
+    address = Column(String)
+    description = Column(String)
 
 
 class Users(Base):
     __tablename__ = "users"
     __table_args__ = {"schema": "buttler"}
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     name = Column(String, index=True)
     hotel_id = Column(Integer)
     access_level = Column(Integer)
@@ -31,7 +33,7 @@ class Customers(Base):
     __tablename__ = "customers"
     __table_args__ = {"schema": "buttler"}
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     hotel_id = Column(Integer)
     name = Column(String)
     phone_number = Column(String, index=True)
@@ -49,7 +51,7 @@ class Information(Base):
     __tablename__ = "information"
     __table_args__ = {"schema": "buttler"}
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     hotel_id = Column(Integer)
     criteria = Column(String)
     description = Column(String)
@@ -61,7 +63,7 @@ class DailyInformation(Base):
     __tablename__ = "daily_information"
     __table_args__ = {"schema": "buttler"}
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     hotel_id = Column(Integer)
     criteria = Column(String)
     description = Column(String)
@@ -73,7 +75,7 @@ class Marketing(Base):
     __tablename__ = "marketing"
     __table_args__ = {"schema": "buttler"}
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     hotel_id = Column(Integer)
     criteria = Column(String)
     description = Column(String)
@@ -86,7 +88,7 @@ class Actions(Base):
     __tablename__ = "actions"
     __table_args__ = {"schema": "buttler"}
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     hotel_id = Column(Integer)
     function = Column(String)
     name = Column(String)
@@ -94,12 +96,15 @@ class Actions(Base):
     fields = Column(JSON)  # Store as JSON to handle dynamic fields
     is_active = Column(Boolean)
 
+    def __repr__(self):
+        return f"<Actions(id={self.id}, hotel_id={self.hotel_id}, name={self.name})>"
+
 
 class Orders(Base):
     __tablename__ = "orders"
     __table_args__ = {"schema": "buttler"}
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     hotel_id = Column(Integer)
     function = Column(String)
     name = Column(String)

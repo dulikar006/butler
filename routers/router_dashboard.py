@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
@@ -131,7 +131,7 @@ class ActionsCreate(BaseModel):
     function: str
     name: str
     description: str
-    fields: dict
+    fields: List[Dict[str, Any]]
     is_active: bool
 
 
